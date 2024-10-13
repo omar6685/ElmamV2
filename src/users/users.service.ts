@@ -1,23 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { Role } from 'src/auth/entities/role.entity';
+import { Role, UserRole } from 'src/auth/entities/role.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User & { roles: Role[] }>,
+    private usersRepository: Repository<User>,
+
+    @InjectRepository(UserRole)
+    private readonly usersRolesRepository: Repository<UserRole>,
+
+    @InjectRepository(Role)
+    private readonly rolesRepository: Repository<Role>,
   ) {}
 
-  async findOne(
-    email: string,
-  ): Promise<(User & { roles: Role[] }) | undefined> {
+  async findOne(email: string): Promise<User | undefined> {
     return this.usersRepository.findOne({
       where: { email: email },
-      relations: ['roles'],
     });
+  }
+
+  // Get roles for a specific user (by user_id)
+  async getUserRoles(userId: number): Promise<Role[]> {
+    // Step 1: Fetch role IDs from users_roles table for this user
+    const userRoles = await this.usersRolesRepository.find({
+      where: { user_id: userId },
+    });
+
+    // Step 2: Fetch role details from roles table using role IDs
+    const roleIds = userRoles.map((ur) => ur.role_id);
+
+    if (roleIds.length > 0) {
+      return this.rolesRepository.findBy({ id: In(roleIds) }); // Fetch roles
+    }
+
+    return [];
   }
 
   async findAll(): Promise<User[]> {
