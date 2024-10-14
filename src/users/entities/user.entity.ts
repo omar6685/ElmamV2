@@ -26,7 +26,7 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   birthdate: Date;
 
-  @Column({ nullable: true })
+  @Column({ unique: true, nullable: true })
   phone: string;
 
   @Column({ nullable: true })
