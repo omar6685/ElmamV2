@@ -34,13 +34,23 @@ export class AuthService {
     const roles: Role[] = await this.usersService.getUserRoles(user.id);
     const roleNames = roles.map((role) => role.name); // Extract role names
 
-    const payload = { sub: user.id, email: user.email, roles: roleNames };
+    const payload = {
+      sub: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      phone: user.phone,
+      email: user.email,
+      roles: roleNames,
+    };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
 
   async signUp(
+    first_name: string,
+    last_name: string,
+    phone: string,
     email: string,
     password: string,
   ): Promise<{ access_token: string }> {
@@ -55,11 +65,24 @@ export class AuthService {
 
     // Create a new user with hashed password
     const newUser = await this.usersService.create({
+      first_name,
+      last_name,
+      phone,
       email,
       encrypted_password: hashedPassword,
     });
 
-    const payload = { sub: newUser.id, email: newUser.email, roles: [] };
+    // Assign default role 'customer' to the new user (create entry in users_roles)
+    await this.usersService.assignRole(newUser.id, 'customer');
+
+    const payload = {
+      sub: newUser.id,
+      first_name: newUser.first_name,
+      last_name: newUser.last_name,
+      phone: newUser.phone,
+      email: newUser.email,
+      roles: ['customer'],
+    };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
