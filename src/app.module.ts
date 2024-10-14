@@ -4,10 +4,13 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { User } from './users/entities/user.entity';
 import { Role, UserRole } from './auth/entities/role.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './shared/guards/roles.guard';
+import { StudiesModule } from './studies/studies.module';
 
 @Module({
   imports: [
@@ -28,9 +31,16 @@ import { Role, UserRole } from './auth/entities/role.entity';
     }),
     AuthModule,
     UsersModule,
+    StudiesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
