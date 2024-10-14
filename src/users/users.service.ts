@@ -40,13 +40,35 @@ export class UsersService {
     return [];
   }
 
+  // Assign a role to a user (create entry in users_roles table)
+  async assignRole(userId: number, roleName: string): Promise<void> {
+    // Find the role by name
+    const role = await this.rolesRepository.findOne({
+      where: { name: roleName },
+    });
+    if (!role) {
+      throw new Error('Role not found');
+    }
+
+    // Insert into users_roles table
+    const userRole = this.usersRolesRepository.create({
+      user_id: userId,
+      role_id: role.id,
+    });
+    await this.usersRolesRepository.save(userRole);
+  }
+
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
   async create(createUserDto: Partial<User>): Promise<User> {
-    const newUser = this.usersRepository.create(createUserDto);
-    await this.usersRepository.save(newUser);
-    return newUser;
+    try {
+      const newUser = this.usersRepository.create(createUserDto);
+      await this.usersRepository.save(newUser);
+      return newUser;
+    } catch (err) {
+      throw new Error('Error creating user');
+    }
   }
 }
