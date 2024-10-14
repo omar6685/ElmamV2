@@ -49,3 +49,60 @@ Key Points in the Implementation
 -   **Users and Roles Management**: The system does not directly link `User` and `Role` entities. Instead, roles are fetched dynamically from the `users_roles` join table, ensuring flexibility in adding or modifying roles.
 -   **JWT Tokens**: JWT tokens are used for authentication and authorization, carrying the user's essential information and roles.
 -   **Separate Role Query**: Instead of modifying the `User` entity to include roles, roles are queried separately from the `users_roles` and `roles` tables, maintaining flexibility and compliance with the existing database schema.
+ 
+<hr style="border:2px solid gray">
+
+Authorization
+=============
+
+Overview of the Authorization Task
+----------------------------------
+
+This project not only implements **JWT-based authentication** but also provides **role-based access control (RBAC)** to restrict access to specific routes based on user roles. The role information is dynamically assigned during the authentication process and embedded in the JWT token. This ensures that the system can enforce different levels of access for different users based on their roles.
+
+Role-Based Access Control (RBAC) Flow
+-------------------------------------
+
+1.  **Authorization Using JWT Tokens**: Each user, upon successful authentication, is issued a JWT token that includes their roles. This token is used for authorization on subsequent requests, ensuring that users only access endpoints they are authorized to.
+
+2.  **JWT Payload**: The JWT payload contains essential user information, including `user_id`, `email`, and `roles`. These roles are dynamically fetched from the database during login and are embedded in the token for future authorization checks.
+
+3.  **Role-Based Restrictions**: Access to certain endpoints is restricted based on roles. For instance, administrative routes might require an "admin" role, while user-specific routes may require a "user" role. The system checks the user's roles before allowing access to these endpoints.
+
+Custom Roles Guard
+------------------
+
+A **custom roles guard** is implemented to enforce role-based access to routes. This guard checks if the user has the required roles before granting access to an endpoint. The process involves the following steps:
+
+1.  **Extract JWT from the Authorization Header**: For each request, the guard extracts the JWT token from the `Authorization` header.
+
+2.  **Verify JWT Token**: The JWT token is verified using the `JwtService` to ensure its validity. If valid, the guard proceeds to extract the roles from the token's payload.
+
+3.  **Check User Roles**: The user's roles, extracted from the token, are compared with the roles required for the endpoint. The required roles are defined using a custom `@Roles()` decorator applied to each route.
+
+4.  **Enforce Role-Based Access**: If the user's roles match any of the required roles for the endpoint, access is granted. If not, the user is denied access, and an appropriate error is returned.
+
+How Roles Are Applied
+---------------------
+
+-   **@Roles() Decorator**: The `@Roles()` decorator is used to specify the roles required for accessing specific routes. This decorator is applied at the controller level or directly on specific route handlers. It sets metadata that the roles guard reads to enforce the role-based restrictions.
+
+-   **Dynamic Role Fetching**: The roles are dynamically fetched from the `users_roles` table during the authentication process. This ensures that user roles can be updated independently from the authentication process, providing flexibility in managing roles.
+
+Authorization Flow
+------------------
+
+1.  **JWT-Based Role Enforcement**: The user's roles are fetched during the sign-in or sign-up process and embedded in the JWT token. On each request, the token is sent in the `Authorization` header and is verified before accessing protected routes.
+
+2.  **Roles in JWT Token**: After login, the JWT token carries the user's roles, which are included in the payload and used for role-based checks across the system.
+
+3.  **AuthGuard and Roles Guard**: The **AuthGuard** ensures that only authenticated users with valid tokens can access protected routes. The **Roles Guard** further restricts access based on the user's roles, ensuring role-specific routes are only accessible by authorized users.
+
+Authorization Highlights
+------------------------
+
+-   **Flexible Role Management**: Roles are not hardcoded into the `User` entity but are dynamically assigned and managed through the `users_roles` table. This allows for flexible and scalable role management, which is essential for large systems with evolving access control needs.
+
+-   **Role-Based Route Protection**: Each route can be protected based on user roles, ensuring that users only have access to routes they are authorized to access. The roles guard makes it easy to define and enforce these restrictions.
+
+-   **JWT Tokens for Role Enforcement**: The JWT tokens carry both authentication and authorization information, including the user's roles, ensuring that the same token can be used for both authentication and role-based access control. This reduces overhead while maintaining security.
