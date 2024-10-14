@@ -1,5 +1,9 @@
 export class SignInDto{
     email: string;
-    phone_number: string
+    password: string;
+}
+
+export class SignupDto{
+    email: string;
     password: string;
 }
