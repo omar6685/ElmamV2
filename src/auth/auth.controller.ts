@@ -11,6 +11,7 @@ import {
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import { SignInDto, SignupDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,15 +20,15 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
+  signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
   @Public()
   @HttpCode(HttpStatus.CREATED)
   @Post('signup')
-  signUp(@Body() signUpDto: Record<string, any>) {
-    console.log(signUpDto)
+  signUp(@Body() signUpDto: SignupDto) {
+    console.log(signUpDto);
     return this.authService.signUp(signUpDto.email, signUpDto.password);
   }
 
