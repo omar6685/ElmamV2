@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from './entities/role.entity';
+import { RolesEnum } from 'src/shared/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -73,7 +74,7 @@ export class AuthService {
     });
 
     // Assign default role 'customer' to the new user (create entry in users_roles)
-    await this.usersService.assignRole(newUser.id, 'customer');
+    await this.usersService.assignRole(newUser.id, RolesEnum.CUSTOMER);
 
     const payload = {
       sub: newUser.id,
@@ -81,7 +82,7 @@ export class AuthService {
       last_name: newUser.last_name,
       phone: newUser.phone,
       email: newUser.email,
-      roles: ['customer'],
+      roles: [RolesEnum.CUSTOMER],
     };
     return {
       access_token: await this.jwtService.signAsync(payload),

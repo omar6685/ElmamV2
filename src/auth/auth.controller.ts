@@ -37,7 +37,6 @@ export class AuthController {
   @Post('signup')
   @UsePipes(new ZodValidationPipe(signUpSchema))
   signUp(@Body() signUpDto: SignUpDto) {
-    console.log(signUpDto);
     return this.authService.signUp(
       signUpDto.first_name,
       signUpDto.last_name,
