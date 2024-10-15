@@ -8,8 +8,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { RolesEnum } from '../enums/role.enum';
 import { ROLES_KEY } from '../decorators/roles.decorator';
-import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from 'src/auth/constants';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
+import { jwtConstants } from 'src/shared/constants';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -56,7 +56,11 @@ export class RolesGuard implements CanActivate {
       // If user has the required role, grant access
       return true;
     } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Token has expired');
+      } else {
+        throw new UnauthorizedException('Invalid or malformed token');
+      }
     }
   }
 }
