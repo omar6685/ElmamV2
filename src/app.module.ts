@@ -11,6 +11,8 @@ import { Role, UserRole } from './auth/entities/role.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './shared/guards/roles.guard';
 import { StudiesModule } from './studies/studies.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { StudiesModule } from './studies/studies.module';
     AuthModule,
     UsersModule,
     StudiesModule,
+    NotificationsModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [
