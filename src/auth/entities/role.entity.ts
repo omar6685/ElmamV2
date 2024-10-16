@@ -1,11 +1,9 @@
-import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   Timestamp,
   PrimaryColumn,
-  ManyToOne,
 } from 'typeorm';
 
 @Entity('roles')

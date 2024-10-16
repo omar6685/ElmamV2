@@ -1,9 +1,12 @@
+import { ArchiveRecord } from 'src/notifications/entities/archived-record.entity';
+import { Message } from 'src/messages/entities/message.entity';
+import { Notification } from 'src/notifications/entities/notification.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  Unique,
   Timestamp,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('users')
@@ -64,4 +67,10 @@ export class User {
     default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
   })
   updated_at: Timestamp;
+
+  // @OneToMany((type) => Message, (message) => message.user)
+  // messages: Message[];
+  //
+  // @OneToMany((type) => Notification, (notification) => notification.user)
+  // notifications: Notification[];
 }

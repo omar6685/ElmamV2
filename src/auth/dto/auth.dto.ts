@@ -1,11 +1,12 @@
 import { z } from 'zod';
-import validator from "validator";
+import validator from 'validator';
 
 // Define Zod schema for SignInDto
 export const signInSchema = z
   .object({
     email: z.string().email(),
     password: z.string().min(8),
+    fcm_token: z.string().optional(), // Optional field for FCM token
   })
   .required();
 
@@ -19,6 +20,7 @@ export const signUpSchema = z
     phone: z.string().min(10).refine(validator.isMobilePhone),
     email: z.string().email(),
     password: z.string().min(8),
+    fcm_token: z.string().optional(), // Optional field for FCM token
   })
   .required();
 

@@ -4,8 +4,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
+import { jwtConstants } from '../shared/constants';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from './decorators/public.decorator';
@@ -23,7 +23,6 @@ export class AuthGuard implements CanActivate {
       context.getClass(),
     ]);
     if (isPublic) {
-      // 💡 See this condition
       return true;
     }
 
@@ -39,8 +38,13 @@ export class AuthGuard implements CanActivate {
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
       request['user'] = payload;
-    } catch {
-      throw new UnauthorizedException();
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Token has expired');
+      } else {
+        console.log('Auth Guard:', error);
+        throw new UnauthorizedException('Invalid or malformed token');
+      }
     }
     return true;
   }
