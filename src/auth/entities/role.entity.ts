@@ -4,7 +4,6 @@ import {
   Column,
   Timestamp,
   PrimaryColumn,
-  ManyToOne,
 } from 'typeorm';
 
 @Entity('roles')

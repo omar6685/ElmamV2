@@ -1,26 +1,38 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from './entities/role.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+
 import { RolesEnum } from 'src/shared/enums/role.enum';
+import { UsersService } from '../users/users.service';
+import { Role } from './entities/role.entity';
+import { NotificationToken } from 'src/notifications/entities/notification-token.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    @InjectRepository(NotificationToken)
+    private notificationTokenRepository: Repository<NotificationToken>, // Inject repository for NotificationToken
   ) {}
 
   // Sign in method
   async signIn(
     email: string,
     password: string,
+    fcm_token: string,
+    request: Request,
   ): Promise<{ access_token: string }> {
     const user = await this.usersService.findOne(email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    console.log('Login User:', user);
 
     // Compare hashed password with provided password
     const isPasswordValid = await bcrypt.compare(
@@ -31,9 +43,37 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    console.log('Password Match ✔');
+
     // Fetch user roles
     const roles: Role[] = await this.usersService.getUserRoles(user.id);
     const roleNames = roles.map((role) => role.name); // Extract role names
+
+    console.log(`Role names: ${roleNames}`);
+
+    // Get current timestamp and IP address
+    const currentTimestamp = new Date();
+    const currentIp = request.ip;
+
+    console.log('Sign in time/dates:', {
+      sign_in_count: user.sign_in_count + 1,
+      last_sign_in_at: user.current_sign_in_at,
+      current_sign_in_at: currentTimestamp,
+      last_sign_in_ip: user.current_sign_in_ip,
+      current_sign_in_ip: currentIp,
+    });
+
+    // Update user's sign-in data
+    await this.usersService.update(user.id, {
+      sign_in_count: user.sign_in_count + 1,
+      last_sign_in_at: user.current_sign_in_at,
+      current_sign_in_at: currentTimestamp,
+      last_sign_in_ip: user.current_sign_in_ip,
+      current_sign_in_ip: currentIp,
+    });
+
+    // Create or update the fcm_token for this user
+    await this.handleFcmToken(user, fcm_token);
 
     const payload = {
       sub: user.id,
@@ -54,6 +94,7 @@ export class AuthService {
     phone: string,
     email: string,
     password: string,
+    fcm_token: string,
   ): Promise<{ access_token: string }> {
     // Check if user already exists
     const existingUser = await this.usersService.findOne(email);
@@ -76,6 +117,9 @@ export class AuthService {
     // Assign default role 'customer' to the new user (create entry in users_roles)
     await this.usersService.assignRole(newUser.id, RolesEnum.CUSTOMER);
 
+    // Create or update the fcm_token for this user
+    await this.handleFcmToken(newUser, fcm_token);
+
     const payload = {
       sub: newUser.id,
       first_name: newUser.first_name,
@@ -87,5 +131,27 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  // Helper function to handle FCM token creation or update
+  private async handleFcmToken(user: User, fcm_token: string) {
+    const existingToken = await this.notificationTokenRepository.findOne({
+      where: { user: { id: user.id } },
+    });
+
+    if (existingToken) {
+      // If the token is different, update it
+      if (existingToken.notification_token !== fcm_token) {
+        existingToken.notification_token = fcm_token;
+        await this.notificationTokenRepository.save(existingToken);
+      }
+    } else {
+      // If the token doesn't exist, create a new record
+      const newToken = this.notificationTokenRepository.create({
+        user,
+        notification_token: fcm_token,
+      });
+      await this.notificationTokenRepository.save(newToken);
+    }
   }
 }

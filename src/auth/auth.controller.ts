@@ -5,10 +5,13 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Request,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
+import { Request as ExpressRequest } from 'express';
+
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
@@ -28,8 +31,13 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @UsePipes(new ZodValidationPipe(signInSchema))
-  signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto.email, signInDto.password);
+  signIn(@Body() signInDto: SignInDto, @Req() request: ExpressRequest) {
+    return this.authService.signIn(
+      signInDto.email,
+      signInDto.password,
+      signInDto.fcm_token,
+      request,
+    );
   }
 
   @Public()
@@ -43,11 +51,13 @@ export class AuthController {
       signUpDto.phone,
       signUpDto.email,
       signUpDto.password,
+      signUpDto.fcm_token,
     );
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
+  @HttpCode(HttpStatus.OK)
   getProfile(@Request() req) {
     return req.user;
   }
