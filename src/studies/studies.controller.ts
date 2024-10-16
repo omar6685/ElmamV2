@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { StudiesService } from './studies.service';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { RolesEnum } from 'src/shared/enums/role.enum';
@@ -10,12 +10,14 @@ export class StudiesController {
   constructor(private readonly studiesService: StudiesService) {}
 
   @Get('admin')
+  @HttpCode(HttpStatus.OK)
   @Roles(RolesEnum.ADMIN) // Only allow users with 'admin' role to access this route
   getAdminResource() {
     return 'This is an admin-only resource';
   }
 
   @Get('user')
+  @HttpCode(HttpStatus.OK)
   @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER) // Allow users with 'user' or 'admin' roles to access this route
   getUserResource() {
     return 'This is a resource for users and admins';
