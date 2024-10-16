@@ -5,8 +5,12 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+
 import { Notification } from '../../notifications/entities/notification.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity('messages')
 export class Message {
@@ -19,9 +23,6 @@ export class Message {
   @Column({ type: 'boolean', default: false })
   seen: boolean;
 
-  @Column({ type: 'bigint' })
-  user_id: number;
-
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
@@ -31,9 +32,12 @@ export class Message {
   })
   updated_at: Date;
 
-  //   @ManyToOne((type) => User, (user) => user.messages)
-  //   user: User;
+  // Many-to-One relation with User (A user can have many messages)
+  @ManyToOne(() => User, (user) => user.messages, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
-  @OneToMany((type) => Notification, (notification) => notification.message)
+  // One-to-Many relation with Notification (A message can have many notifications)
+  @OneToMany(() => Notification, (notification) => notification.message)
   notifications: Notification[];
 }
