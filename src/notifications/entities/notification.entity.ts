@@ -7,19 +7,15 @@ import {
   UpdateDateColumn,
   JoinColumn,
 } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
+
 import { Message } from '../../messages/entities/message.entity';
+import { NotificationToken } from './notification-token.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity('notifications')
 export class Notification {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ type: 'bigint' })
-  user_id: number;
-
-  @Column({ type: 'bigint' })
-  message_id: number;
 
   @Column({ type: 'varchar' })
   title: string;
@@ -30,9 +26,6 @@ export class Notification {
   @Column({ type: 'boolean', default: false })
   seen: boolean;
 
-  @Column({ type: 'bigint', nullable: true })
-  archive_record_id: number;
-
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
@@ -42,9 +35,18 @@ export class Notification {
   })
   updated_at: Date;
 
-  @ManyToOne((type) => Message, (message) => message.notifications)
+  // Many-to-One relation with User (A user can have many notifications)
+  @ManyToOne(() => User, (user) => user.notifications, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  // Many-to-One relation with Message (A message can have many notifications)
+  @ManyToOne(() => Message, (message) => message.notifications, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'message_id' })
   message: Message;
 
-  //   @ManyToOne((type) => User, (user) => user.notifications)
-  //   user: User;
+  // Many-to-One relation with NotificationToken (A token can have many notifications)
+  @ManyToOne(() => NotificationToken, (notificationToken) => notificationToken.notifications, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'notification_token_id' })
+  notification_token: NotificationToken;
 }

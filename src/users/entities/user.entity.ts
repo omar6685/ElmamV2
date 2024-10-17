@@ -1,13 +1,16 @@
-import { ArchiveRecord } from 'src/notifications/entities/archived-record.entity';
-import { Message } from 'src/messages/entities/message.entity';
-import { Notification } from 'src/notifications/entities/notification.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   Timestamp,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+
+import { NotificationToken } from 'src/notifications/entities/notification-token.entity';
+import { Message } from 'src/messages/entities/message.entity';
+import { Notification } from 'src/notifications/entities/notification.entity';
 
 @Entity('users')
 export class User {
@@ -59,18 +62,27 @@ export class User {
   @Column({ nullable: true })
   last_sign_in_ip: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Timestamp;
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date;
 
-  @Column({
+  @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
   })
-  updated_at: Timestamp;
+  updated_at: Date;
 
-  // @OneToMany((type) => Message, (message) => message.user)
-  // messages: Message[];
-  //
-  // @OneToMany((type) => Notification, (notification) => notification.user)
-  // notifications: Notification[];
+  // One-to-Many relation with Message (A user can have many messages)
+  @OneToMany(() => Message, (message) => message.user)
+  messages: Message[];
+
+  // One-to-Many relation with Notification (A user can have many notifications)
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
+
+  // One-to-Many relation with NotificationToken (A user can have many notification tokens)
+  @OneToMany(
+    () => NotificationToken,
+    (notificationToken) => notificationToken.user,
+  )
+  notificationTokens: NotificationToken[];
 }

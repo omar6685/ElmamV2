@@ -1,15 +1,27 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as firebase from 'firebase-admin';
+import * as path from 'path';
+
 import { Notification } from './entities/notification.entity';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { NotificationToken } from './entities/notification-token.entity';
+
+firebase.initializeApp({
+  credential: firebase.credential.cert(
+    path.join(__dirname, '..', '..', 'firebase-adminsdk.json'),
+  ),
+});
 
 @Injectable()
 export class NotificationsService {
   constructor(
     @InjectRepository(Notification)
     private readonly notificationRepository: Repository<Notification>,
+    @InjectRepository(NotificationToken)
+    private readonly notificationTokenRepository: Repository<NotificationToken>,
   ) {}
 
   // Create a new notification
@@ -25,7 +37,7 @@ export class NotificationsService {
   // Find all notifications
   async findAll(): Promise<Notification[]> {
     return await this.notificationRepository.find({
-      relations: ['user', 'message'], // Include related entities if needed
+      relations: ['user', 'message', 'notification_tokens'], // Include related entities if needed
     });
   }
 
@@ -58,5 +70,38 @@ export class NotificationsService {
   async remove(id: number): Promise<void> {
     const notification = await this.findOne(id); // Find the notification, throw error if not found
     await this.notificationRepository.remove(notification);
+  }
+
+  async send(
+    userId: number,
+    title: string,
+    body: string,
+  ): Promise<{ message: string }> {
+    try {
+      const notification = await this.notificationTokenRepository.findOne({
+        where: { user: { id: userId }, status: 'ACTIVE' },
+      });
+      console.log('Request data:', userId, title, body);
+      console.log('notification:', notification);
+      if (notification) {
+        console.log('Notification exists');
+        await firebase.messaging().send({
+          notification: { title, body },
+          token: notification.notification_token,
+        });
+        await this.notificationRepository.save({
+          notification_token: notification,
+          title,
+          body,
+          status: 'ACTIVE',
+          created_by: userId,
+        });
+        return { message: 'Notification sent successfully' };
+      } else {
+        throw new Error('User does not have a valid notification token');
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
