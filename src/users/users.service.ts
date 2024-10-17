@@ -19,7 +19,7 @@ export class UsersService {
 
   async findOne(email: string): Promise<User | undefined> {
     return this.usersRepository.findOne({
-      where: { email: email },
+      where: { email },
     });
   }
 
@@ -70,5 +70,9 @@ export class UsersService {
     } catch (err) {
       throw new Error('Error creating user');
     }
+  }
+
+  async update(userId: number, updateData: Partial<User>): Promise<void> {
+    await this.usersRepository.update(userId, updateData);
   }
 }
