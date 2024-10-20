@@ -22,7 +22,8 @@ export class EmailsService {
         subject,
         html: content, // Content as HTML
       });
-      console.log('Email sent successfully!', response);
+      // console.log('Email sent successfully!', response);
+      return { message: 'Email sent successfully' };
     } catch (error) {
       console.error('Failed to send email', error);
       throw new Error('Failed to send email');
