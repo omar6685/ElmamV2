@@ -1,0 +1,13 @@
+[
+  {
+    "name": "default",
+    "type": "postgres",
+    "host": "dpg-crvuldo8fa8c73duialg-a.frankfurt-postgres.render.com",
+    "port": 5432,
+    "username": "moyasar",
+    "password": "3tzmLBvukVVlDkA2bmdhtqwQSEkSoZTr",
+    "database": "",
+    "synchronize": false,
+    "entities": ["entities/*.js"]
+  }
+]
