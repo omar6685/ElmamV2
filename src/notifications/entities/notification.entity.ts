@@ -1,52 +1,69 @@
+import { Message } from 'src/messages/entities/message.entity';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-
-import { Message } from '../../messages/entities/message.entity';
-import { NotificationToken } from './notification-token.entity';
 import { User } from 'src/users/entities/user.entity';
+import { ArchiveRecord } from './archived-record.entity';
+import { NotificationToken } from './notification-token.entity';
 
-@Entity('notifications')
+@Index('index_notifications_on_archive_record_id', ['archiveRecordId'], {})
+@Index('notifications_pkey', ['id'], { unique: true })
+@Index('index_notifications_on_message_id', ['messageId'], {})
+@Index('index_notifications_on_user_id', ['userId'], {})
+@Entity('notifications', { schema: 'public' })
 export class Notification {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
 
-  @Column({ type: 'varchar' })
-  title: string;
+  @Column('bigint', { name: 'user_id' })
+  userId: string;
 
-  @Column({ type: 'text' })
-  content: string;
+  @Column('bigint', { name: 'message_id', nullable: true })
+  messageId: string | null;
 
-  @Column({ type: 'boolean', default: false })
-  seen: boolean;
+  @Column('character varying', { name: 'title', nullable: true })
+  title: string | null;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  @Column('boolean', { name: 'seen', nullable: true })
+  seen: boolean | null;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-  })
-  updated_at: Date;
+  @Column('timestamp without time zone', { name: 'created_at' })
+  createdAt: Date;
 
-  // Many-to-One relation with User (A user can have many notifications)
-  @ManyToOne(() => User, (user) => user.notifications, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  @Column('timestamp without time zone', { name: 'updated_at' })
+  updatedAt: Date;
 
-  // Many-to-One relation with Message (A message can have many notifications)
-  @ManyToOne(() => Message, (message) => message.notifications, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'message_id' })
+  @Column('text', { name: 'content', nullable: true })
+  content: string | null;
+
+  @Column('bigint', { name: 'archive_record_id', nullable: true })
+  archiveRecordId: string | null;
+
+  @ManyToOne(
+    () => ArchiveRecord,
+    (archiveRecords) => archiveRecords.notifications,
+  )
+  @JoinColumn([{ name: 'archive_record_id', referencedColumnName: 'id' }])
+  archiveRecord: ArchiveRecord;
+
+  @ManyToOne(() => Message, (messages) => messages.notifications)
+  @JoinColumn([{ name: 'message_id', referencedColumnName: 'id' }])
   message: Message;
 
-  // Many-to-One relation with NotificationToken (A token can have many notifications)
-  @ManyToOne(() => NotificationToken, (notificationToken) => notificationToken.notifications, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (users) => users.notifications)
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User;
+
+  @ManyToOne(
+    () => NotificationToken,
+    (notificationToken) => notificationToken.notifications,
+    { onDelete: 'CASCADE' },
+  )
   @JoinColumn({ name: 'notification_token_id' })
   notification_token: NotificationToken;
 }

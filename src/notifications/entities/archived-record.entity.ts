@@ -1,53 +1,59 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  Entity,
+  Index,
+  JoinColumn,
   ManyToOne,
   OneToMany,
-  CreateDateColumn,
-  UpdateDateColumn,
-  JoinColumn,
-  Index,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
 import { Notification } from './notification.entity';
+import { User } from 'src/users/entities/user.entity';
 
-@Entity('archive_records')
-@Index('index_archive_records_on_user_id', ['user_id']) // Index on user_id
+@Index('archive_records_pkey', ['id'], { unique: true })
+@Index('index_archive_records_on_user_id', ['userId'], {})
+@Entity('archive_records', { schema: 'public' })
 export class ArchiveRecord {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  id: number;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
+  id: string;
 
-  @Column({ type: 'varchar' })
-  company_name: string;
+  @Column('character varying', { name: 'company_name', nullable: true })
+  companyName: string | null;
 
-  @Column({ type: 'varchar' })
-  record_type: string;
+  @Column('character varying', { name: 'record_type', nullable: true })
+  recordType: string | null;
 
-  @Column({ type: 'varchar' })
-  record_no: string;
+  @Column('character varying', { name: 'record_no', nullable: true })
+  recordNo: string | null;
 
-  @Column({ type: 'varchar' })
-  address: string;
+  @Column('character varying', { name: 'address', nullable: true })
+  address: string | null;
 
-  @Column({ type: 'date' })
-  date_of_issue: Date;
+  @Column('date', { name: 'date_of_issue', nullable: true })
+  dateOfIssue: string | null;
 
-  @Column({ type: 'date' })
-  date_of_expire: Date;
+  @Column('date', { name: 'date_of_expire', nullable: true })
+  dateOfExpire: string | null;
 
-  @Column({ type: 'text', nullable: true })
-  note: string;
+  @Column('text', { name: 'note', nullable: true })
+  note: string | null;
 
-  @Column({ type: 'bigint' })
-  user_id: number;
+  @Column('bigint', { name: 'user_id' })
+  userId: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  @Column('timestamp without time zone', { name: 'created_at' })
+  createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-  })
-  updated_at: Date;
+  @Column('timestamp without time zone', { name: 'updated_at' })
+  updatedAt: Date;
+
+  @ManyToOne(() => User, (users) => users.archiveRecords)
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User;
+
+  @OneToMany(
+    () => Notification,
+    (notifications) => notifications.archiveRecord,
+  )
+  notifications: Notification[];
 }
