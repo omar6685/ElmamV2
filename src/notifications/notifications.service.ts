@@ -11,7 +11,7 @@ import { NotificationToken } from './entities/notification-token.entity';
 
 firebase.initializeApp({
   credential: firebase.credential.cert(
-    path.join(__dirname, '..', '..', 'firebase-adminsdk.json'),
+    path.join('firebase-adminsdk.json'),
   ),
 });
 
