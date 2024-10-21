@@ -14,6 +14,13 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { MessagesModule } from './messages/messages.module';
 import { EmailsModule } from './emails/emails.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { User } from './users/entities/user.entity';
+import { Notification } from './notifications/entities/notification.entity';
+import { NotificationToken } from './notifications/entities/notification-token.entity';
+import { Message } from './messages/entities/message.entity';
+import { Role, UserRole } from './auth/entities/role.entity';
+import { EmailTemplate } from './emails/entities/email.entity';
+import { ArchiveRecord } from './notifications/entities/archived-record.entity';
 
 @Module({
   imports: [
@@ -27,8 +34,22 @@ import { MailerModule } from '@nestjs-modules/mailer';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [],
-      synchronize: process.env.NODE_ENV === 'development', // only synchronize in development mode
+      entities: [
+        User,
+        Notification,
+        NotificationToken,
+        ArchiveRecord,
+        Message,
+        Role,
+        UserRole,
+        EmailTemplate,
+      ],
+      migrations: [
+        /*...*/
+      ],
+      // entities: ['src/**/*.entity{.ts,.js}'],
+      ssl: true,
+      synchronize: false, //process.env.NODE_ENV == 'development', // only synchronize in development mode
     }),
     MailerModule.forRoot({
       transport: {
