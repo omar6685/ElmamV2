@@ -12,6 +12,9 @@ import { EmailsService } from './emails.service';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { RolesEnum } from 'src/shared/enums/role.enum';
 import { Roles } from 'src/shared/decorators/roles.decorator';
+import { SendEmailDto } from './dto/send-email.dto';
+import { SendEmailFromTemplateDto } from './dto/send-email-from-template.dto';
+import { GetTemplateByNameDto } from './dto/get-template.dto';
 
 @Controller('emails')
 @UseGuards(RolesGuard)
@@ -22,12 +25,12 @@ export class EmailsController {
   @Post('send')
   @HttpCode(HttpStatus.ACCEPTED)
   @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER)
-  async sendEmail(
-    @Body('to') to: string,
-    @Body('subject') subject: string,
-    @Body('content') content: string,
-  ) {
-    return this.emailsService.sendEmail(to, subject, content);
+  async sendEmail(@Body() sendEmailDto: SendEmailDto) {
+    return this.emailsService.sendEmail(
+      sendEmailDto.to,
+      sendEmailDto.subject,
+      sendEmailDto.content,
+    );
   }
 
   // Send email using template
@@ -35,14 +38,12 @@ export class EmailsController {
   @HttpCode(HttpStatus.ACCEPTED)
   @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER)
   async sendEmailFromTemplate(
-    @Body('to') to: string,
-    @Body('templateName') templateName: string,
-    @Body('variables') variables: Record<string, any>,
+    @Body() sendEmailFromTemplateDto: SendEmailFromTemplateDto,
   ) {
     return this.emailsService.sendEmailFromTemplate(
-      to,
-      templateName,
-      variables,
+      sendEmailFromTemplateDto.to,
+      sendEmailFromTemplateDto.templateName,
+      sendEmailFromTemplateDto.variables,
     );
   }
 
@@ -58,7 +59,7 @@ export class EmailsController {
   @Get('templates/:name')
   @HttpCode(HttpStatus.OK)
   @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER)
-  async getTemplateByName(@Param('name') name: string) {
-    return this.emailsService.getTemplateByName(name);
+  async getTemplateByName(@Param() getTemplateByNameDto: GetTemplateByNameDto) {
+    return this.emailsService.getTemplateByName(getTemplateByNameDto.name);
   }
 }

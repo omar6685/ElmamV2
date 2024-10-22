@@ -22,8 +22,12 @@ export class EmailsService {
         subject,
         html: content, // Content as HTML
       });
-      // console.log('Email sent successfully!', response);
-      return { message: 'Email sent successfully' };
+
+      return {
+        message: 'Email sent successfully',
+        accepted: response.accepted,
+        rejected: response.rejected,
+      };
     } catch (error) {
       console.error('Failed to send email', error);
       throw new Error('Failed to send email');
