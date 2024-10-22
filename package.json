@@ -2,13 +2,9 @@
   "name": "elmam-backend",
   "version": "0.0.1",
   "description": "",
-  "type": "module",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
-  "typeorm": {
-    "dataSource": "./src/orm.config.ts"
-  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -22,9 +18,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:run": "typeorm-ts-node-esm migration:run -d ./src/ormconfig.ts",
     "generate-entities": "npx typeorm-model-generator -h <host> -d <db_name> -u <db_user> -p <db_password> -e postgres",
-    "typeorm:migration:run": "ts-node ./src/scripts/run-typeorm-migrations.ts"
+    "typeorm": "npm run build && npx typeorm -d dist/config/data-source.config.js",
+    "migration:generate": "npm run typeorm -- migration:generate ./src/migrations/init",
+    "migration:run": "npm run typeorm -- migration:run",
+    "migration:revert": "npm run typeorm -- migration:revert",
+    "migration:create": "npm run typeorm:cli -- migration:create -d src/migrations -n"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
