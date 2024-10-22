@@ -37,7 +37,7 @@ export class AuthService {
     // Compare hashed password with provided password
     const isPasswordValid = await bcrypt.compare(
       password,
-      user.encrypted_password,
+      user.encryptedPassword,
     );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
@@ -56,20 +56,20 @@ export class AuthService {
     const currentIp = request.ip;
 
     console.log('Sign in time/dates:', {
-      sign_in_count: user.sign_in_count + 1,
-      last_sign_in_at: user.current_sign_in_at,
-      current_sign_in_at: currentTimestamp,
-      last_sign_in_ip: user.current_sign_in_ip,
-      current_sign_in_ip: currentIp,
+      signInCount: user.signInCount + 1,
+      last_sign_in_at: user.currentSignInAt,
+      currentSignInAt: currentTimestamp,
+      last_sign_in_ip: user.currentSignInIp,
+      currentSignInIp: currentIp,
     });
 
     // Update user's sign-in data
     await this.usersService.update(user.id, {
-      sign_in_count: user.sign_in_count + 1,
-      last_sign_in_at: user.current_sign_in_at,
-      current_sign_in_at: currentTimestamp,
-      last_sign_in_ip: user.current_sign_in_ip,
-      current_sign_in_ip: currentIp,
+      signInCount: user.signInCount + 1,
+      lastSignInAt: user.currentSignInAt,
+      currentSignInAt: currentTimestamp,
+      lastSignInIp: user.currentSignInIp,
+      currentSignInIp: currentIp,
     });
 
     // Create or update the fcm_token for this user
@@ -77,8 +77,8 @@ export class AuthService {
 
     const payload = {
       sub: user.id,
-      first_name: user.first_name,
-      last_name: user.last_name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       phone: user.phone,
       email: user.email,
       roles: roleNames,
@@ -89,8 +89,8 @@ export class AuthService {
   }
 
   async signUp(
-    first_name: string,
-    last_name: string,
+    firstName: string,
+    lastName: string,
     phone: string,
     email: string,
     password: string,
@@ -107,11 +107,11 @@ export class AuthService {
 
     // Create a new user with hashed password
     const newUser = await this.usersService.create({
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       phone,
       email,
-      encrypted_password: hashedPassword,
+      encryptedPassword: hashedPassword,
     });
 
     // Assign default role 'customer' to the new user (create entry in users_roles)
@@ -122,8 +122,8 @@ export class AuthService {
 
     const payload = {
       sub: newUser.id,
-      first_name: newUser.first_name,
-      last_name: newUser.last_name,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
       phone: newUser.phone,
       email: newUser.email,
       roles: [RolesEnum.CUSTOMER],

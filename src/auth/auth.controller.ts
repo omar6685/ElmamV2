@@ -46,8 +46,8 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(signUpSchema))
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(
-      signUpDto.first_name,
-      signUpDto.last_name,
+      signUpDto.firstName,
+      signUpDto.lastName,
       signUpDto.phone,
       signUpDto.email,
       signUpDto.password,

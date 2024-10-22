@@ -5,7 +5,7 @@ import validator from 'validator';
 export const signInSchema = z
   .object({
     email: z.string().email(),
-    password: z.string().min(8),
+    password: z.string().min(6),
     fcm_token: z.string().optional(), // Optional field for FCM token
   })
   .required();
@@ -15,11 +15,11 @@ export type SignInDto = z.infer<typeof signInSchema>;
 // Define Zod schema for SignUpDto
 export const signUpSchema = z
   .object({
-    first_name: z.string(),
-    last_name: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
     phone: z.string().min(10).refine(validator.isMobilePhone),
     email: z.string().email(),
-    password: z.string().min(8),
+    password: z.string().min(6),
     fcm_token: z.string().optional(), // Optional field for FCM token
   })
   .required();
