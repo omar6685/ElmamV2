@@ -26,9 +26,16 @@ export class UsersService {
   // Get roles for a specific user (by user_id)
   async getUserRoles(userId: number): Promise<Role[]> {
     // Step 1: Fetch role IDs from users_roles table for this user
-    const userRoles = await this.usersRolesRepository.find({
-      where: { user_id: userId },
-    });
+    console.log('User id:', userId);
+    const userRoles = await this.usersRolesRepository
+      .find({
+        where: { user_id: userId },
+      })
+      .then((data) => data)
+      .catch((err) => {
+        console.log('Error in user roles:', err);
+        return [];
+      });
 
     // Step 2: Fetch role details from roles table using role IDs
     const roleIds = userRoles.map((ur) => ur.role_id);
