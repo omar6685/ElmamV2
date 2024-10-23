@@ -16,6 +16,7 @@ import { MessagesModule } from './messages/messages.module';
 import { EmailsModule } from './emails/emails.module';
 import { dbDataSourceOptions } from '../config/data-source.config';
 import { mailerOptions } from '../config/mailer-options.config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { mailerOptions } from '../config/mailer-options.config';
     }),
     TypeOrmModule.forRoot(dbDataSourceOptions),
     MailerModule.forRoot(mailerOptions),
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     StudiesModule,
