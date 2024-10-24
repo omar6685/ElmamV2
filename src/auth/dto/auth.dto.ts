@@ -6,7 +6,7 @@ export const signInSchema = z
   .object({
     email: z.string().email(),
     password: z.string().min(6),
-    fcm_token: z.string().optional(), // Optional field for FCM token
+    fcmToken: z.string().optional(), // Optional field for FCM token
   })
   .required();
 
@@ -20,7 +20,7 @@ export const signUpSchema = z
     phone: z.string().min(10).refine(validator.isMobilePhone),
     email: z.string().email(),
     password: z.string().min(6),
-    fcm_token: z.string().optional(), // Optional field for FCM token
+    fcmToken: z.string().optional(), // Optional field for FCM token
   })
   .required();
 

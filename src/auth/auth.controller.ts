@@ -35,7 +35,7 @@ export class AuthController {
     return this.authService.signIn(
       signInDto.email,
       signInDto.password,
-      signInDto.fcm_token,
+      signInDto.fcmToken,
       request,
     );
   }
@@ -51,7 +51,7 @@ export class AuthController {
       signUpDto.phone,
       signUpDto.email,
       signUpDto.password,
-      signUpDto.fcm_token,
+      signUpDto.fcmToken,
     );
   }
 
