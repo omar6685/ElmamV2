@@ -1,9 +1,10 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import * as dotenv from 'dotenv';
+import { config } from 'dotenv';
+import { SeederOptions } from 'typeorm-extension';
 
-dotenv.config();
+config();
 
-export const dbDataSourceOptions: DataSourceOptions = {
+export const dbDataSourceOptions: DataSourceOptions & SeederOptions = {
   type: 'postgres',
   host: process.env.DATABASE_HOST,
   port: parseInt(process.env.DATABASE_PORT),
@@ -16,6 +17,8 @@ export const dbDataSourceOptions: DataSourceOptions = {
   ],
   ssl: process.env.DATABASE_HOST !== '127.0.0.1',
   synchronize: process.env.NODE_ENV == 'development', // only synchronize in development mode
+  seeds: ['dist/db/seeds/seeders/**/*.js'],
+  factories: ['dist/db/factories/**/*.js'],
 };
 
 const dbDataSource = new DataSource(dbDataSourceOptions);
