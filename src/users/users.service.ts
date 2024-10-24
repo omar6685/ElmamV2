@@ -53,6 +53,7 @@ export class UsersService {
     const role = await this.rolesRepository.findOne({
       where: { name: roleName },
     });
+    console.log(`Role ${role.id} found`);
     if (!role) {
       throw new Error('Role not found');
     }
