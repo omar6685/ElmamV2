@@ -1,11 +1,14 @@
 import { Message } from 'src/messages/entities/message.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Timestamp,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { ArchiveRecord } from './archived-record.entity';
@@ -32,11 +35,11 @@ export class Notification {
   @Column('boolean', { name: 'seen', nullable: true })
   seen: boolean | null;
 
-  @Column('timestamp without time zone', { name: 'created_at' })
-  createdAt: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Timestamp;
 
-  @Column('timestamp without time zone', { name: 'updated_at' })
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Timestamp;
 
   @Column('text', { name: 'content', nullable: true })
   content: string | null;
@@ -65,5 +68,5 @@ export class Notification {
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'notification_token_id' })
-  notification_token: NotificationToken;
+  notificationToken: NotificationToken;
 }

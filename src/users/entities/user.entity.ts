@@ -1,9 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
+  Timestamp,
+  UpdateDateColumn,
 } from 'typeorm';
 // import { ActivityGuides } from "./ActivityGuides";
 // import { ActivityReports } from "./ActivityReports";
@@ -64,11 +67,11 @@ export class User {
   })
   rememberCreatedAt: Date | null;
 
-  @Column('timestamp without time zone', { name: 'created_at' })
-  createdAt: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Timestamp;
 
-  @Column('timestamp without time zone', { name: 'updated_at' })
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Timestamp;
 
   @Column('character varying', { name: 'confirmation_token', nullable: true })
   confirmationToken: string | null;

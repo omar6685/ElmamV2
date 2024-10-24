@@ -87,7 +87,7 @@ export class NotificationsService {
         console.log('Notification exists');
         await firebase.messaging().send({
           notification: { title, body },
-          token: notification.notification_token,
+          token: notification.notificationToken,
         });
         await this.notificationRepository.save({
           notification_token: notification,

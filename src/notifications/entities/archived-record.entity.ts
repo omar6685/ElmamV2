@@ -1,11 +1,14 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Timestamp,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Notification } from './notification.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -41,11 +44,11 @@ export class ArchiveRecord {
   @Column('bigint', { name: 'user_id' })
   userId: string;
 
-  @Column('timestamp without time zone', { name: 'created_at' })
-  createdAt: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Timestamp;
 
-  @Column('timestamp without time zone', { name: 'updated_at' })
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Timestamp;
 
   @ManyToOne(() => User, (users) => users.archiveRecords)
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])

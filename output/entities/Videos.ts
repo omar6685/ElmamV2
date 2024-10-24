@@ -1,4 +1,4 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from "typeorm";
 
 @Index("videos_pkey", ["id"], { unique: true })
 @Entity("videos", { schema: "public" })
@@ -8,10 +8,10 @@ export class Videos {
 
   @Column("character varying", { name: "title", nullable: true })
   title: string | null;
+  
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Timestamp;
 
-  @Column("timestamp without time zone", { name: "created_at" })
-  createdAt: Date;
-
-  @Column("timestamp without time zone", { name: "updated_at" })
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Timestamp;
 }

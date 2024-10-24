@@ -21,11 +21,11 @@ export class NotificationToken {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ type: 'varchar', length: 50, default: 'web' })
-  device_type: string;
+  @Column({ type: 'varchar', name: 'device_type', length: 50, default: 'web' })
+  deviceType: string;
 
-  @Column({ type: 'varchar' })
-  notification_token: string;
+  @Column({ type: 'varchar', name: 'notification_token' })
+  notificationToken: string;
 
   @Column({ type: 'varchar', length: 10, default: 'ACTIVE' })
   status: string;
@@ -33,7 +33,7 @@ export class NotificationToken {
   // One-to-Many relation with Notification (A token can have many notifications)
   @OneToMany(
     () => Notification,
-    (notification) => notification.notification_token,
+    (notification) => notification.notificationToken,
   )
   notifications: Notification[];
 }

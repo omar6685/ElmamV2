@@ -141,15 +141,15 @@ export class AuthService {
 
     if (existingToken) {
       // If the token is different, update it
-      if (existingToken.notification_token !== fcm_token) {
-        existingToken.notification_token = fcm_token;
+      if (existingToken.notificationToken !== fcm_token) {
+        existingToken.notificationToken = fcm_token;
         await this.notificationTokenRepository.save(existingToken);
       }
     } else {
       // If the token doesn't exist, create a new record
       const newToken = this.notificationTokenRepository.create({
         user,
-        notification_token: fcm_token,
+        notificationToken: fcm_token,
       });
       await this.notificationTokenRepository.save(newToken);
     }
