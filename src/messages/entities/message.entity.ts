@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  Timestamp,
 } from 'typeorm';
 
 import { Notification } from '../../notifications/entities/notification.entity';
@@ -23,14 +24,18 @@ export class Message {
   @Column({ type: 'boolean', default: false })
   seen: boolean;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Timestamp;
 
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
   })
-  updated_at: Date;
+  updatedAt: Date;
 
   // Many-to-One relation with User (A user can have many messages)
   @ManyToOne(() => User, (user) => user.messages, { onDelete: 'CASCADE' })

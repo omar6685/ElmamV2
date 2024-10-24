@@ -14,14 +14,18 @@ export class Role {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Timestamp;
+  @Column({
+    type: 'timestamp',
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Timestamp;
 
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
   })
-  updated_at: Timestamp;
+  updatedAt: Timestamp;
 }
 
 @Entity('users_roles')

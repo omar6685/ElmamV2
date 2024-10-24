@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Timestamp,
+} from 'typeorm';
 
 @Entity('email_templates')
 export class EmailTemplate {
@@ -14,9 +21,9 @@ export class EmailTemplate {
   @Column({ type: 'text' })
   content: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Timestamp;
 
-  @UpdateDateColumn({ type: 'timestamp' })
-  updated_at: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Timestamp;
 }
