@@ -14,7 +14,7 @@ export const scheduleRecurringEmailDto = z.object({
   ),
   subject: z.string().min(1, { message: 'Subject cannot be empty' }),
   content: z.string().min(1, { message: 'Content cannot be empty' }),
-  interval: z.enum(['1d', '7d', '2w', '3w'], {
+  interval: z.enum(['1m', '1d', '7d', '2w', '3w'], {
     errorMap: () => ({
       message: 'Invalid interval, valid values are: 1d, 7d, 2w, 3w',
     }),

@@ -63,7 +63,11 @@ export class EmailsService {
     const cronJobs = this.schedulerRegistry.getCronJobs();
     const jobs = [];
     cronJobs.forEach((job, key) => {
-      jobs.push({ name: key, nextExecution: job.nextDates().toLocaleString() });
+      jobs.push({
+        name: key,
+        nextExecution: job.nextDates().toLocaleString(),
+        lastExecution: job.lastExecution,
+      });
     });
     return jobs;
   }
@@ -77,6 +81,9 @@ export class EmailsService {
   ) {
     const job = new CronJob(sendDate, () => {
       this.sendEmail(to, subject, content);
+      this.logger.log(
+        `Scheduled email for ${to} at ${sendDate} sent successfully ✅`,
+      );
     });
 
     this.schedulerRegistry.addCronJob(`email-${to}-${sendDate}`, job);
@@ -93,8 +100,12 @@ export class EmailsService {
     content: string,
     cronPattern: string,
   ) {
-    const job = new CronJob(cronPattern, () => {
+    const interval = this.getCronPattern(cronPattern);
+    const job = new CronJob(interval, () => {
       this.sendEmail(to, subject, content);
+      this.logger.log(
+        `Scheduled recurring email for ${to} at ${new Date().toLocaleDateString()} sent successfully ✅`,
+      );
     });
 
     this.schedulerRegistry.addCronJob(`recurring-email-${to}`, job);
@@ -143,6 +154,8 @@ export class EmailsService {
 
   private getCronPattern(intervalCode: string): string {
     switch (intervalCode) {
+      case '1m':
+        return '* * * * *'; // Every minute
       case '1d':
         return '0 0 * * *'; // Every day
       case '7d':

@@ -120,7 +120,7 @@ export class EmailsController {
   @Delete('cancel/:jobName')
   @Roles(RolesEnum.ADMIN)
   @UsePipes(new ZodValidationPipe(cancelScheduledEmailDto))
-  async cancelScheduledEmail(@Param('jobName') jobName: string) {
+  async cancelScheduledEmail(@Param() { jobName }: CancelScheduledEmailDto) {
     return this.emailsService.cancelScheduledEmail(jobName);
   }
 }
