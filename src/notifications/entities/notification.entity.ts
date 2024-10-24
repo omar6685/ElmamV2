@@ -24,10 +24,10 @@ export class Notification {
   id: number;
 
   @Column('bigint', { name: 'user_id' })
-  userId: string;
+  userId: number;
 
   @Column('bigint', { name: 'message_id', nullable: true })
-  messageId: string | null;
+  messageId: number | null;
 
   @Column('character varying', { name: 'title', nullable: true })
   title: string | null;
