@@ -8,41 +8,38 @@ import {
   ManyToOne,
   JoinColumn,
   Timestamp,
+  Index,
 } from 'typeorm';
 
 import { Notification } from '../../notifications/entities/notification.entity';
 import { User } from 'src/users/entities/user.entity';
 
-@Entity('messages')
+@Index("messages_pkey", ["id"], { unique: true })
+@Index("index_messages_on_user_id", ["userId"], {})
+@Entity("messages", { schema: "public" })
 export class Message {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: "bigint", name: "id" })
   id: number;
 
-  @Column({ type: 'varchar' })
-  title: string;
+  @Column("character varying", { name: "title", nullable: true })
+  title: string | null;
 
-  @Column({ type: 'boolean', default: false })
-  seen: boolean;
+  @Column("boolean", { name: "seen", nullable: true, default: () => "false" })
+  seen: boolean | null;
 
-  @CreateDateColumn({
-    type: 'timestamp',
-    name: 'created_at',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createdAt: Timestamp;
+  @Column("bigint", { name: "user_id" })
+  userId: string;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-  })
+  @Column("timestamp without time zone", { name: "created_at" })
+  createdAt: Date;
+
+  @Column("timestamp without time zone", { name: "updated_at" })
   updatedAt: Date;
 
-  // Many-to-One relation with User (A user can have many messages)
-  @ManyToOne(() => User, (user) => user.messages, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => User, (users) => users.messages)
+  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: User;
 
-  // One-to-Many relation with Notification (A message can have many notifications)
-  @OneToMany(() => Notification, (notification) => notification.message)
+  @OneToMany(() => Notification, (notifications) => notifications.message)
   notifications: Notification[];
 }
