@@ -30,11 +30,12 @@ export class Message {
   @Column("bigint", { name: "user_id" })
   userId: string;
 
-  @Column("timestamp without time zone", { name: "created_at" })
-  createdAt: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Timestamp;
 
-  @Column("timestamp without time zone", { name: "updated_at" })
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Timestamp;
+
 
   @ManyToOne(() => User, (users) => users.messages)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
