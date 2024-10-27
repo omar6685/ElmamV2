@@ -30,9 +30,9 @@ export class Role {
 
 @Entity('users_roles')
 export class UserRole {
-  @PrimaryColumn()
-  user_id: number;
+  @PrimaryColumn({ name: 'user_id' })
+  userId: number;
 
-  @PrimaryColumn()
-  role_id: number;
+  @PrimaryColumn({ name: 'role_id' })
+  roleId: number;
 }

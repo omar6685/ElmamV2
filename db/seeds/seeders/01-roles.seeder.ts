@@ -9,6 +9,8 @@ export default class RolesSeeder implements Seeder {
     dataSource: DataSource,
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
+    console.log('Roles seeding in progress... ⏳');
+
     await dataSource.query('TRUNCATE "roles" RESTART IDENTITY;');
 
     const repository = dataSource.getRepository(Role);
