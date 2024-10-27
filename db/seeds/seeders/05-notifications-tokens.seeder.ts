@@ -8,6 +8,8 @@ export default class NotificationTokenSeeder implements Seeder {
     dataSource: DataSource,
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
+    console.log('Notification tokens seeding in progress... ⏳');
+
     await dataSource.query('TRUNCATE "notification_tokens" RESTART IDENTITY CASCADE;');
 
     const tokenRepository = dataSource.getRepository(NotificationToken);
@@ -20,7 +22,7 @@ export default class NotificationTokenSeeder implements Seeder {
 
     const tokens = users.map((user) => ({
       user,
-      deviceType: 'mobile',
+      deviceType: 'web',
       notificationToken: `${user.email}-token`,
       status: 'ACTIVE',
     }));
