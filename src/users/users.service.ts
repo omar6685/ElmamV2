@@ -29,7 +29,7 @@ export class UsersService {
     console.log('User id:', userId);
     const userRoles = await this.usersRolesRepository
       .find({
-        where: { user_id: userId },
+        where: { userId: userId },
       })
       .then((data) => data)
       .catch((err) => {
@@ -60,8 +60,8 @@ export class UsersService {
 
     // Insert into users_roles table
     const userRole = this.usersRolesRepository.create({
-      user_id: userId,
-      role_id: role.id,
+      userId: userId,
+      roleId: role.id,
     });
     await this.usersRolesRepository.save(userRole);
   }
