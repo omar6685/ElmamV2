@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { APP_GUARD } from '@nestjs/core';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { HttpModule } from '@nestjs/axios';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -28,6 +29,7 @@ import { CrnsModule } from './crns/crns.module';
     TypeOrmModule.forRoot(dbDataSourceOptions),
     MailerModule.forRoot(mailerOptions),
     ScheduleModule.forRoot(),
+    HttpModule,
     AuthModule,
     UsersModule,
     StudiesModule,
