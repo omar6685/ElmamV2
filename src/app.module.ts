@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { APP_GUARD } from '@nestjs/core';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { HttpModule } from '@nestjs/axios';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -18,6 +19,7 @@ import { dbDataSourceOptions } from '../config/data-source.config';
 import { mailerOptions } from '../config/mailer-options.config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ProductsModule } from './products/products.module';
+import { CrnsModule } from './crns/crns.module';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { ProductsModule } from './products/products.module';
     TypeOrmModule.forRoot(dbDataSourceOptions),
     MailerModule.forRoot(mailerOptions),
     ScheduleModule.forRoot(),
+    HttpModule,
     AuthModule,
     UsersModule,
     StudiesModule,
@@ -34,6 +37,7 @@ import { ProductsModule } from './products/products.module';
     MessagesModule,
     EmailsModule,
     ProductsModule,
+    CrnsModule,
   ],
   controllers: [AppController],
   providers: [
