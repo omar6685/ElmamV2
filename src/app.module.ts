@@ -18,6 +18,7 @@ import { dbDataSourceOptions } from '../config/data-source.config';
 import { mailerOptions } from '../config/mailer-options.config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ProductsModule } from './products/products.module';
+import { CrnsModule } from './crns/crns.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ProductsModule } from './products/products.module';
     MessagesModule,
     EmailsModule,
     ProductsModule,
+    CrnsModule,
   ],
   controllers: [AppController],
   providers: [
