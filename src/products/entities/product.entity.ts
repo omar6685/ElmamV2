@@ -12,7 +12,7 @@ import {
 @Entity('products', { schema: 'public' })
 export class Product {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
-  id: string;
+  id: number;
 
   @Column('character varying', { name: 'name', nullable: true })
   name: string | null;
