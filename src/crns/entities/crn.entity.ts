@@ -1,3 +1,4 @@
+import { Entities } from 'src/entities/entities/entity.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -5,12 +6,12 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 //   import { ActivityReports } from "./ActivityReports";
 //   import { Bills } from "./Bills";
 //   import { CrnEntities } from "./CrnEntities";
-//   import { Entities } from "./Entities";
 //   import { MihanMowatans } from "./MihanMowatans";
 //   import { Mihans } from "./Mihans";
 //   import { NationalityReports } from "./NationalityReports";
@@ -120,11 +121,11 @@ export class CommercialRegistrationNumber {
   //   )
   //   crnEntities: CrnEntities[];
 
-  //   @OneToMany(
-  //     () => Entities,
-  //     (entities) => entities.commercialRegistrationNumber,
-  //   )
-  //   entities: Entities[];
+    @OneToMany(
+      () => Entities,
+      (entities) => entities.commercialRegistrationNumber,
+    )
+    entities: Entities[];
 
   //   @OneToMany(
   //     () => MihanMowatans,
