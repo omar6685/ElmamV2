@@ -13,7 +13,7 @@ import {
 import { ArchiveRecord } from 'src/notifications/entities/archived-record.entity';
 // import { Bills } from "./Bills";
 // import { Discounts } from "./Discounts";
-// import { Entities } from "./Entities";
+import { Entities } from 'src/entities/entities/entity.entity';
 // import { Guides } from "./Guides";
 import { Message } from 'src/messages/entities/message.entity';
 // import { MihanMowatans } from "./MihanMowatans";
@@ -158,16 +158,16 @@ export class User {
   // bills: Bills[];
 
   @OneToMany(
-  () => CommercialRegistrationNumber,
-  (commercialRegistrationNumbers) => commercialRegistrationNumbers.user,
+    () => CommercialRegistrationNumber,
+    (commercialRegistrationNumbers) => commercialRegistrationNumbers.user,
   )
   commercialRegistrationNumbers: CommercialRegistrationNumber[];
   //
   // @OneToMany(() => Discounts, (discounts) => discounts.user)
   // discounts: Discounts[];
   //
-  // @OneToMany(() => Entities, (entities) => entities.user)
-  // entities: Entities[];
+  @OneToMany(() => Entities, (entities) => entities.user)
+  entities: Entities[];
   //
   // @OneToMany(() => Guides, (guides) => guides.user)
   // guides: Guides[];
