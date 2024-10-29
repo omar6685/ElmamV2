@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateCrnDto } from './create-crn.dto';
+import { updateCommercialRegistrationSchema } from './create-crn.dto';
+import { z } from 'zod';
 
-export class UpdateCrnDto extends PartialType(CreateCrnDto) {}
+export type UpdateCommercialRegistrationDto = z.infer<
+  typeof updateCommercialRegistrationSchema
+>;

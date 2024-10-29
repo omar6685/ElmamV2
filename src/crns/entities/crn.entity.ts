@@ -5,7 +5,6 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 //   import { ActivityReports } from "./ActivityReports";
@@ -22,9 +21,9 @@ import {
 @Index('commercial_registration_numbers_pkey', ['id'], { unique: true })
 @Index('index_commercial_registration_numbers_on_user_id', ['userId'], {})
 @Entity('commercial_registration_numbers', { schema: 'public' })
-export class CommercialRegistrationNumbers {
+export class CommercialRegistrationNumber {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
-  id: string;
+  id: number;
 
   @Column('character varying', { name: 'cr_name', nullable: true })
   crName: string | null;
