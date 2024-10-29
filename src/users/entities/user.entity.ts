@@ -22,7 +22,7 @@ import { Message } from 'src/messages/entities/message.entity';
 // import { NationalityReports } from "./NationalityReports";
 import { Notification } from 'src/notifications/entities/notification.entity';
 import { NotificationToken } from 'src/notifications/entities/notification-token.entity';
-import { CommercialRegistrationNumbers } from 'src/crns/entities/crn.entity';
+import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
 // import { RelatedJobGuides } from "./RelatedJobGuides";
 // import { RelatedJobs } from "./RelatedJobs";
 // import { Studies } from "./Studies";
@@ -158,10 +158,10 @@ export class User {
   // bills: Bills[];
 
   @OneToMany(
-  () => CommercialRegistrationNumbers,
+  () => CommercialRegistrationNumber,
   (commercialRegistrationNumbers) => commercialRegistrationNumbers.user,
   )
-  commercialRegistrationNumbers: CommercialRegistrationNumbers[];
+  commercialRegistrationNumbers: CommercialRegistrationNumber[];
   //
   // @OneToMany(() => Discounts, (discounts) => discounts.user)
   // discounts: Discounts[];
