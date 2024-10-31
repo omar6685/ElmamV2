@@ -1,13 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes } from '@nestjs/common';
+
 import { EntitiesService } from './entities.service';
-import { CreateEntityDto } from './dto/create-entity.dto';
-import { UpdateEntityDto } from './dto/update-entity.dto';
+import { CreateEntityDto, createEntitySchema } from './dto/create-entity.dto';
+import { UpdateEntityDto,updateEntitySchema } from './dto/update-entity.dto';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { ZodValidationPipe } from 'src/shared/pipes/zod.pipe';
+import { RolesEnum } from 'src/shared/enums/role.enum';
 
 @Controller('entities')
+@UseGuards(RolesGuard)
 export class EntitiesController {
   constructor(private readonly entitiesService: EntitiesService) {}
 
   @Post()
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
+  @UsePipes(new ZodValidationPipe(createEntitySchema))
   create(@Body() createEntityDto: CreateEntityDto) {
     return this.entitiesService.create(createEntityDto);
   }
@@ -23,6 +31,8 @@ export class EntitiesController {
   }
 
   @Patch(':id')
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
+  @UsePipes(new ZodValidationPipe(updateEntitySchema))
   update(@Param('id') id: string, @Body() updateEntityDto: UpdateEntityDto) {
     return this.entitiesService.update(+id, updateEntityDto);
   }
