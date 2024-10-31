@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateEntityDto } from './create-entity.dto';
+import { z } from 'zod';
+import { createEntitySchema } from './create-entity.dto';
 
-export class UpdateEntityDto extends PartialType(CreateEntityDto) {}
+export const updateEntitySchema = createEntitySchema.partial();
+
+export type UpdateEntityDto = z.infer<typeof updateEntitySchema>;
