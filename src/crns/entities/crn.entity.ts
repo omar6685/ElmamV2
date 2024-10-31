@@ -69,21 +69,18 @@ export class CommercialRegistrationNumber {
   @Column('double precision', {
     name: 'true_cr_number',
     nullable: true,
-    precision: 53,
   })
   trueCrNumber: number | null;
 
   @Column('double precision', {
     name: 'cr_entity_number',
     nullable: true,
-    precision: 53,
   })
   crEntityNumber: number | null;
 
   @Column('double precision', {
     name: 'cr_main_entity_number',
     nullable: true,
-    precision: 53,
   })
   crMainEntityNumber: number | null;
 

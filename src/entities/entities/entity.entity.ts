@@ -70,14 +70,12 @@ export class Entities {
   @Column('double precision', {
     name: 'real_foreigner',
     nullable: true,
-    precision: 53,
   })
   realForeigner: number | null;
 
   @Column('double precision', {
     name: 'real_saudi',
     nullable: true,
-    precision: 53,
   })
   realSaudi: number | null;
 
