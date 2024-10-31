@@ -6,10 +6,7 @@ import { EntitiesController } from './entities.controller';
 import { Entities } from './entities/entity.entity';
 
 @Module({
-  imports: [
-    
-    TypeOrmModule.forFeature([Entities]),
-  ],
+  imports: [TypeOrmModule.forFeature([Entities])],
   controllers: [EntitiesController],
   providers: [EntitiesService],
 })
