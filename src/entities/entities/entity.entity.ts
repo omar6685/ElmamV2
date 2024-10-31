@@ -23,7 +23,7 @@ import {
 @Entity('entities', { schema: 'public' })
 export class Entities {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
-  id: string;
+  id: number;
 
   @Column('boolean', { name: 'adaptation', nullable: true })
   adaptation: boolean | null;
