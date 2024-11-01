@@ -1,4 +1,4 @@
-export type TWathqInfoReponse = {
+export type TWathqInfoResponse = {
   crName: string;
   crNumber: string;
   crEntityNumber: string;

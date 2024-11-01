@@ -5,6 +5,7 @@ import { DataSource } from 'typeorm';
 import { APP_GUARD } from '@nestjs/core';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HttpModule } from '@nestjs/axios';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,8 +18,8 @@ import { MessagesModule } from './messages/messages.module';
 import { EmailsModule } from './emails/emails.module';
 import { dbDataSourceOptions } from '../config/data-source.config';
 import { mailerOptions } from '../config/mailer-options.config';
-import { ScheduleModule } from '@nestjs/schedule';
 import { ProductsModule } from './products/products.module';
+import { EntitiesModule } from './entities/entities.module';
 import { CrnsModule } from './crns/crns.module';
 
 @Module({
@@ -38,6 +39,7 @@ import { CrnsModule } from './crns/crns.module';
     EmailsModule,
     ProductsModule,
     CrnsModule,
+    EntitiesModule,
   ],
   controllers: [AppController],
   providers: [

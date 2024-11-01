@@ -1,17 +1,19 @@
+import { Entities } from 'src/entities/entities/entity.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 //   import { ActivityReports } from "./ActivityReports";
 //   import { Bills } from "./Bills";
 //   import { CrnEntities } from "./CrnEntities";
-//   import { Entities } from "./Entities";
 //   import { MihanMowatans } from "./MihanMowatans";
 //   import { Mihans } from "./Mihans";
 //   import { NationalityReports } from "./NationalityReports";
@@ -22,9 +24,9 @@ import {
 @Index('commercial_registration_numbers_pkey', ['id'], { unique: true })
 @Index('index_commercial_registration_numbers_on_user_id', ['userId'], {})
 @Entity('commercial_registration_numbers', { schema: 'public' })
-export class CommercialRegistrationNumbers {
+export class CommercialRegistrationNumber {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
-  id: string;
+  id: number;
 
   @Column('character varying', { name: 'cr_name', nullable: true })
   crName: string | null;
@@ -54,10 +56,10 @@ export class CommercialRegistrationNumbers {
   @Column('bigint', { name: 'user_id' })
   userId: string;
 
-  @Column('timestamp without time zone', { name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
-  @Column('timestamp without time zone', { name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
 
   @Column('character varying', { name: 'cr_number', nullable: true })
@@ -69,21 +71,18 @@ export class CommercialRegistrationNumbers {
   @Column('double precision', {
     name: 'true_cr_number',
     nullable: true,
-    precision: 53,
   })
   trueCrNumber: number | null;
 
   @Column('double precision', {
     name: 'cr_entity_number',
     nullable: true,
-    precision: 53,
   })
   crEntityNumber: number | null;
 
   @Column('double precision', {
     name: 'cr_main_entity_number',
     nullable: true,
-    precision: 53,
   })
   crMainEntityNumber: number | null;
 
@@ -121,11 +120,11 @@ export class CommercialRegistrationNumbers {
   //   )
   //   crnEntities: CrnEntities[];
 
-  //   @OneToMany(
-  //     () => Entities,
-  //     (entities) => entities.commercialRegistrationNumber,
-  //   )
-  //   entities: Entities[];
+  @OneToMany(
+    () => Entities,
+    (entities) => entities.commercialRegistrationNumber,
+  )
+  entities: Entities[];
 
   //   @OneToMany(
   //     () => MihanMowatans,
