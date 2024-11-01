@@ -2,12 +2,14 @@ import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 //   import { CrnEntities } from "./CrnEntities";
 //    import { ActivityTables } from "./ActivityTables";
@@ -23,7 +25,7 @@ import {
 @Entity('entities', { schema: 'public' })
 export class Entities {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
-  id: string;
+  id: number;
 
   @Column('boolean', { name: 'adaptation', nullable: true })
   adaptation: boolean | null;
@@ -70,24 +72,22 @@ export class Entities {
   @Column('double precision', {
     name: 'real_foreigner',
     nullable: true,
-    precision: 53,
   })
   realForeigner: number | null;
 
   @Column('double precision', {
     name: 'real_saudi',
     nullable: true,
-    precision: 53,
   })
   realSaudi: number | null;
 
   @Column('bigint', { name: 'commercial_registration_number_id' })
   commercialRegistrationNumberId: string;
 
-  @Column('timestamp without time zone', { name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
-  @Column('timestamp without time zone', { name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
 
   @Column('bigint', { name: 'user_id' })
