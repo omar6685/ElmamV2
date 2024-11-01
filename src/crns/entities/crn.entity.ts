@@ -2,12 +2,14 @@ import { Entities } from 'src/entities/entities/entity.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 //   import { ActivityReports } from "./ActivityReports";
 //   import { Bills } from "./Bills";
@@ -54,10 +56,10 @@ export class CommercialRegistrationNumber {
   @Column('bigint', { name: 'user_id' })
   userId: string;
 
-  @Column('timestamp without time zone', { name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
-  @Column('timestamp without time zone', { name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
 
   @Column('character varying', { name: 'cr_number', nullable: true })
@@ -118,11 +120,11 @@ export class CommercialRegistrationNumber {
   //   )
   //   crnEntities: CrnEntities[];
 
-    @OneToMany(
-      () => Entities,
-      (entities) => entities.commercialRegistrationNumber,
-    )
-    entities: Entities[];
+  @OneToMany(
+    () => Entities,
+    (entities) => entities.commercialRegistrationNumber,
+  )
+  entities: Entities[];
 
   //   @OneToMany(
   //     () => MihanMowatans,
