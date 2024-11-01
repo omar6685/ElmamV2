@@ -38,8 +38,8 @@ import { CrnsModule } from './crns/crns.module';
     MessagesModule,
     EmailsModule,
     ProductsModule,
+    CrnsModule,
     EntitiesModule,
-    CrnsModule
   ],
   controllers: [AppController],
   providers: [

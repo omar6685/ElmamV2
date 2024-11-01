@@ -8,7 +8,7 @@ import { AxiosResponse } from 'axios';
 import { CommercialRegistrationNumber } from './entities/crn.entity';
 import { CreateCommercialRegistrationDto } from './dto/create-crn.dto';
 import { UpdateCommercialRegistrationDto } from './dto/update-crn.dto';
-import { TWathqInfoReponse } from './types/wathq-response.type';
+import { TWathqInfoResponse } from './types/wathq-response.type';
 
 @Injectable()
 export class CrnsService {
@@ -33,10 +33,10 @@ export class CrnsService {
       const data = response.data;
 
       // 4. Update newCrn with data from API
-      this.updateCrnFromApiResponse(newCrn, data, userId);
+      // this.updateCrnFromApiResponse(newCrn, data, userId);
 
       // 5. Business logic for Main CRN and Branch CRN
-      await this.handleCrnTypeLogic(newCrn, userId);
+      // await this.handleCrnTypeLogic(newCrn, userId);
 
       // 6. Save the new CRN
       const savedCrn = await this.crnsRepository.save(newCrn);
@@ -83,7 +83,7 @@ export class CrnsService {
 
   private async fetchCrnData(
     crNumber: string,
-  ): Promise<AxiosResponse<TWathqInfoReponse>> {
+  ): Promise<AxiosResponse<TWathqInfoResponse>> {
     const url = `https://api.wathq.sa/v5/commercialregistration/info/${crNumber}`;
     const apiKey = process.env.WATHQ_API_KEY.toString();
 
@@ -97,7 +97,7 @@ export class CrnsService {
 
   private updateCrnFromApiResponse(
     crn: CommercialRegistrationNumber,
-    data: TWathqInfoReponse,
+    data: TWathqInfoResponse,
     userId: string,
   ) {
     // Update properties similar to your Ruby code (crName, crMainNumber, etc.)
