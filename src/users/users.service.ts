@@ -83,4 +83,8 @@ export class UsersService {
   async update(userId: number, updateData: Partial<User>): Promise<void> {
     await this.usersRepository.update(userId, updateData);
   }
+
+  async remove(userId: number): Promise<void> {
+    await this.usersRepository.delete(userId);
+  }
 }
