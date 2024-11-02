@@ -21,6 +21,8 @@ import { mailerOptions } from '../config/mailer-options.config';
 import { ProductsModule } from './products/products.module';
 import { EntitiesModule } from './entities/entities.module';
 import { CrnsModule } from './crns/crns.module';
+import { ActivitiesModule } from './activities/activities.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { CrnsModule } from './crns/crns.module';
     ProductsModule,
     CrnsModule,
     EntitiesModule,
+    ActivitiesModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [
