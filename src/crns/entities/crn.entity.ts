@@ -13,12 +13,13 @@ import {
 import { CrnEntities } from 'src/entities/entities/crn-entity.entity';
 import { Entities } from 'src/entities/entities/entity.entity';
 import { User } from 'src/users/entities/user.entity';
+import { NationalityReport } from 'src/reports/entities/nationality-report.entity';
 //   import { ActivityReports } from "./ActivityReports";
 //   import { Bills } from "./Bills";
 //   import { CrnEntities } from "./CrnEntities";
 //   import { MihanMowatans } from "./MihanMowatans";
 //   import { Mihans } from "./Mihans";
-//   import { NationalityReports } from "./NationalityReports";
+//   import { NationalityReport } from "./NationalityReport";
 //   import { RelatedJobs } from "./RelatedJobs";
 //   import { Studies } from "./Studies";
 //   import { Workers } from "./Workers";
@@ -137,11 +138,11 @@ export class CommercialRegistrationNumber {
   //   @OneToMany(() => Mihans, (mihans) => mihans.commercialRegistrationNumber)
   //   mihans: Mihans[];
 
-  //   @OneToMany(
-  //     () => NationalityReports,
-  //     (nationalityReports) => nationalityReports.commercialRegistrationNumber,
-  //   )
-  //   nationalityReports: NationalityReports[];
+    @OneToMany(
+      () => NationalityReport,
+      (nationalityReports) => nationalityReports.commercialRegistrationNumber,
+    )
+    nationalityReports: NationalityReport[];
 
   //   @OneToMany(
   //     () => RelatedJobs,
