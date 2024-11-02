@@ -27,7 +27,7 @@ export class RelatedJobs {
   activityTableId: string;
 
   @Column("bigint", { name: "user_id" })
-  userId: string;
+  userId: number;
 
   @Column("character varying", { name: "result", nullable: true })
   result: string | null;

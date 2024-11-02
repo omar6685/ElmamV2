@@ -21,7 +21,7 @@ export class RelatedJobGuides {
   activityTableId: string;
 
   @Column("bigint", { name: "user_id" })
-  userId: string;
+  userId: number;
 
   @Column("character varying", { name: "file", nullable: true })
   file: string | null;

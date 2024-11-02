@@ -47,7 +47,7 @@ export class MihansCalculators {
   updatedAt: Date;
 
   @Column("bigint", { name: "user_id" })
-  userId: string;
+  userId: number;
 
   @Column("integer", { name: "saudis_condition", nullable: true })
   saudisCondition: number | null;

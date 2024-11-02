@@ -52,7 +52,7 @@ export class CommercialRegistrationNumbers {
   currentPeriodEnd: Date | null;
 
   @Column("bigint", { name: "user_id" })
-  userId: string;
+  userId: number;
 
   @Column("timestamp without time zone", { name: "created_at" })
   createdAt: Date;

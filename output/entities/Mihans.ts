@@ -70,7 +70,7 @@ export class Mihans {
   updatedAt: Date;
 
   @Column("bigint", { name: "user_id", nullable: true })
-  userId: string | null;
+  userId: number | null;
 
   @Column("bigint", {
     name: "commercial_registration_number_id",
