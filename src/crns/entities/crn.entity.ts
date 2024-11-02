@@ -1,5 +1,3 @@
-import { Entities } from 'src/entities/entities/entity.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -11,6 +9,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { CrnEntities } from 'src/entities/entities/crn-entity.entity';
+import { Entities } from 'src/entities/entities/entity.entity';
+import { User } from 'src/users/entities/user.entity';
 //   import { ActivityReports } from "./ActivityReports";
 //   import { Bills } from "./Bills";
 //   import { CrnEntities } from "./CrnEntities";
@@ -114,11 +116,11 @@ export class CommercialRegistrationNumber {
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
 
-  //   @OneToMany(
-  //     () => CrnEntities,
-  //     (crnEntities) => crnEntities.commercialRegistrationNumber,
-  //   )
-  //   crnEntities: CrnEntities[];
+  @OneToMany(
+    () => CrnEntities,
+    (crnEntities) => crnEntities.commercialRegistrationNumber,
+  )
+  crnEntities: CrnEntities[];
 
   @OneToMany(
     () => Entities,
