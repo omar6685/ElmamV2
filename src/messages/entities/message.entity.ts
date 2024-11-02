@@ -28,7 +28,7 @@ export class Message {
   seen: boolean | null;
 
   @Column("bigint", { name: "user_id" })
-  userId: string;
+  userId: number;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Timestamp;

@@ -20,7 +20,7 @@ export class Notifications {
   id: string;
 
   @Column("bigint", { name: "user_id" })
-  userId: string;
+  userId: number;
 
   @Column("bigint", { name: "message_id", nullable: true })
   messageId: string | null;

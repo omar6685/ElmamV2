@@ -91,7 +91,7 @@ export class Entities {
   updatedAt: Date;
 
   @Column("bigint", { name: "user_id" })
-  userId: string;
+  userId: number;
 
   @Column("bigint", { name: "activity_table_id" })
   activityTableId: string;
@@ -116,3 +116,5 @@ export class Entities {
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: Users;
 }
+
+// Add compani size table

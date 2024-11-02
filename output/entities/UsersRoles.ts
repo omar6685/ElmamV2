@@ -6,7 +6,7 @@ import { Column, Entity, Index } from "typeorm";
 @Entity("users_roles", { schema: "public" })
 export class UsersRoles {
   @Column("bigint", { name: "user_id", nullable: true })
-  userId: string | null;
+  userId: number | null;
 
   @Column("bigint", { name: "role_id", nullable: true })
   roleId: string | null;

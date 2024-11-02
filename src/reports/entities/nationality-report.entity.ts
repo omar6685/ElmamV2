@@ -2,11 +2,13 @@ import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Index(
@@ -19,7 +21,7 @@ import {
 @Entity('nationality_reports', { schema: 'public' })
 export class NationalityReport {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
-  id: string;
+  id: number;
 
   @Column('character varying', { name: 'result', nullable: true })
   result: string | null; // number of each nationality with their percentage separated by commas
@@ -40,19 +42,19 @@ export class NationalityReport {
   name: string | null;
 
   @Column('bigint', { name: 'user_id' })
-  userId: string;
+  userId: number;
 
-  @Column('timestamp without time zone', { name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
-  @Column('timestamp without time zone', { name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
 
   @Column('bigint', {
     name: 'commercial_registration_number_id',
     default: () => '1',
   })
-  commercialRegistrationNumberId: string;
+  commercialRegistrationNumberId: number;
 
   @ManyToOne(
     () => CommercialRegistrationNumber,

@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 // Schema for adding a new CommercialRegistrationNumbers entity
 export const createCommercialRegistrationSchema = z.object({
-  crNumber: z.string().nullable().optional(),
-  userId: z.string(), // Required because it's a foreign key
+  crNumber: z.string(),
+  userId: z.number(), // Required because it's a foreign key
 });
 
 export const commercialRegistrationSchema = z.object({
@@ -13,7 +13,7 @@ export const commercialRegistrationSchema = z.object({
   crMainNumber: z.string().nullable().optional(),
   subscriptionStatus: z.string().nullable().default('incomplete'),
   currentPeriodEnd: z.date().nullable().optional(),
-  userId: z.string(), // Required because it's a foreign key
+  userId: z.number(), // Required because it's a foreign key
   crNumber: z.string().nullable().optional(),
   crIssueDate: z.string().nullable().optional(), // Assuming date string format
   trueCrNumber: z.number().nullable().optional(),

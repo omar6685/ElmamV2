@@ -20,7 +20,7 @@ export const createEntitySchema = z.object({
   commercialRegistrationNumberId: z.string(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
-  userId: z.string(),
+  userId: z.number(),
   activityTableId: z.string(),
 });
 
