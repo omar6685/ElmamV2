@@ -33,10 +33,10 @@ export class CrnsService {
       const data = response.data;
 
       // 4. Update newCrn with data from API
-      // this.updateCrnFromApiResponse(newCrn, data, userId);
+      this.updateCrnFromApiResponse(newCrn, data, userId);
 
       // 5. Business logic for Main CRN and Branch CRN
-      // await this.handleCrnTypeLogic(newCrn, userId);
+      await this.handleCrnTypeLogic(newCrn, userId);
 
       // 6. Save the new CRN
       const savedCrn = await this.crnsRepository.save(newCrn);
@@ -91,14 +91,65 @@ export class CrnsService {
       accept: 'application/json',
       apiKey,
     };
-
+    return {
+      status: 200,
+      data: {
+        crName: 'المحدودة XXX شركة',
+        crNumber: '1010XXXX29',
+        crEntityNumber: '700XXXX660',
+        issueDate: '1391/10/19',
+        expiryDate: '1443/08/10',
+        crMainNumber: '',
+        crMainEntityNumber: '700XXXX660',
+        businessType: {
+          id: '205',
+          name: 'مســــــــــاهمة',
+        },
+        fiscalYear: {
+          month: 2,
+          day: 1,
+          calendarType: {
+            id: 1,
+            name: 'هجري',
+          },
+        },
+        status: {
+          id: 'active',
+          name: 'السجل التجاري قائم',
+          nameEn: 'السجل التجاري قائم',
+        },
+        cancellation: {
+          date: '1440/05/01',
+          reason: 'تم الغاء السجل بسب...',
+        },
+        location: {
+          id: '1010',
+          name: 'الرياض',
+        },
+        company: {
+          period: '10',
+          startDate: '1439/01/12',
+          endDate: '1449/01/12,',
+        },
+        activities: {
+          description: 'البيع بالجملة و التجزئة للحبوب والبذور',
+          isic: [
+            {
+              id: '477211',
+              name: 'أنشطة المواد الغذائية',
+              nameEn: null,
+            },
+          ],
+        },
+      },
+    } as AxiosResponse;
     return await firstValueFrom(this.httpService.get(url, { headers }));
   }
 
   private updateCrnFromApiResponse(
     crn: CommercialRegistrationNumber,
     data: TWathqInfoResponse,
-    userId: string,
+    userId: number,
   ) {
     // Update properties similar to your Ruby code (crName, crMainNumber, etc.)
     crn.crName = data.crName;
@@ -121,7 +172,7 @@ export class CrnsService {
 
   private async handleCrnTypeLogic(
     crn: CommercialRegistrationNumber,
-    userId: string,
+    userId: number,
   ) {
     // Check for main CRN existence for the user
     const existingMainCrn = await this.crnsRepository.findOne({
