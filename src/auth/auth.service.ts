@@ -115,7 +115,13 @@ export class AuthService {
     });
 
     // Assign default role 'customer' to the new user (create entry in users_roles)
-    await this.usersService.assignRole(newUser.id, RolesEnum.CUSTOMER);
+    try {
+      await this.usersService.assignRole(newUser.id, RolesEnum.CUSTOMER);
+    } catch (err) {
+      //! Delete the user
+      await this.usersService.remove(newUser.id);
+      throw new Error('Error creating user');
+    }
 
     // Create or update the fcmToken for this user
     await this.handleFcmToken(newUser, fcmToken);
