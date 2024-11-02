@@ -1,5 +1,3 @@
-import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -11,8 +9,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-//   import { CrnEntities } from "./CrnEntities";
-//    import { ActivityTables } from "./ActivityTables";
+
+import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
+import { User } from 'src/users/entities/user.entity';
+import { CrnEntities } from './crn-entity.entity';
+import { ActivityTables } from 'src/activities/entities/activity.entity';
 
 @Index('index_entities_on_activity_table_id', ['activityTableId'], {})
 @Index(
@@ -26,9 +27,6 @@ import {
 export class Entities {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: number;
-
-  @Column('boolean', { name: 'adaptation', nullable: true })
-  adaptation: boolean | null;
 
   @Column('integer', { name: 'ajier', nullable: true })
   ajier: number | null;
@@ -96,12 +94,12 @@ export class Entities {
   @Column('bigint', { name: 'activity_table_id' })
   activityTableId: string;
 
-//   @OneToMany(() => CrnEntities, (crnEntities) => crnEntities.entity)
-//   crnEntities: CrnEntities[];
-// 
-//   @ManyToOne(() => ActivityTables, (activityTables) => activityTables.entities)
-//   @JoinColumn([{ name: 'activity_table_id', referencedColumnName: 'id' }])
-//   activityTable: ActivityTables;
+  @OneToMany(() => CrnEntities, (crnEntities) => crnEntities.entity)
+  crnEntities: CrnEntities[];
+
+  @ManyToOne(() => ActivityTables, (activityTables) => activityTables.entities)
+  @JoinColumn([{ name: 'activity_table_id', referencedColumnName: 'id' }])
+  activityTable: ActivityTables;
 
   @ManyToOne(
     () => CommercialRegistrationNumber,
@@ -116,3 +114,6 @@ export class Entities {
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
 }
+
+// We need to integrate Activity table + CrnEntities for files
+// remove adaptation
