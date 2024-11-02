@@ -20,56 +20,48 @@ export class ActivityTables {
   @Column('double precision', {
     name: 'fixed_value_low_green',
     nullable: true,
-    precision: 53,
   })
   fixedValueLowGreen: number | null;
 
   @Column('double precision', {
     name: 'fixed_curve_value_low_green',
     nullable: true,
-    precision: 53,
   })
   fixedCurveValueLowGreen: number | null;
 
   @Column('double precision', {
     name: 'fixed_value_mid_green',
     nullable: true,
-    precision: 53,
   })
   fixedValueMidGreen: number | null;
 
   @Column('double precision', {
     name: 'fixed_curve_value_mid_green',
     nullable: true,
-    precision: 53,
   })
   fixedCurveValueMidGreen: number | null;
 
   @Column('double precision', {
     name: 'fixed_value_hi_green',
     nullable: true,
-    precision: 53,
   })
   fixedValueHiGreen: number | null;
 
   @Column('double precision', {
     name: 'fixed_curve_value_hi_green',
     nullable: true,
-    precision: 53,
   })
   fixedCurveValueHiGreen: number | null;
 
   @Column('double precision', {
     name: 'fixed_value_platinium_green',
     nullable: true,
-    precision: 53,
   })
   fixedValuePlatiniumGreen: number | null;
 
   @Column('double precision', {
     name: 'fixed_curve_value_platinium_green',
     nullable: true,
-    precision: 53,
   })
   fixedCurveValuePlatiniumGreen: number | null;
 
