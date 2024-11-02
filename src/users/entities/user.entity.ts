@@ -8,6 +8,7 @@ import {
   Timestamp,
   UpdateDateColumn,
 } from 'typeorm';
+
 // import { ActivityGuides } from "./ActivityGuides";
 // import { ActivityReports } from "./ActivityReports";
 import { ArchiveRecord } from 'src/notifications/entities/archived-record.entity';
@@ -19,10 +20,10 @@ import { Message } from 'src/messages/entities/message.entity';
 // import { MihanMowatans } from "./MihanMowatans";
 // import { Mihans } from "./Mihans";
 // import { MihansCalculators } from "./MihansCalculators";
-// import { NationalityReports } from "./NationalityReports";
 import { Notification } from 'src/notifications/entities/notification.entity';
 import { NotificationToken } from 'src/notifications/entities/notification-token.entity';
 import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
+import { NationalityReport } from 'src/reports/entities/nationality-report.entity';
 // import { RelatedJobGuides } from "./RelatedJobGuides";
 // import { RelatedJobs } from "./RelatedJobs";
 // import { Studies } from "./Studies";
@@ -187,11 +188,11 @@ export class User {
   // )
   // mihansCalculators: MihansCalculators[];
   //
-  // @OneToMany(
-  // () => NationalityReports,
-  // (nationalityReports) => nationalityReports.user,
-  // )
-  // nationalityReports: NationalityReports[];
+  @OneToMany(
+  () => NationalityReport,
+  (nationalityReports) => nationalityReports.user,
+  )
+  nationalityReports: NationalityReport[];
 
   @OneToMany(() => Notification, (notifications) => notifications.user)
   notifications: Notification[];
