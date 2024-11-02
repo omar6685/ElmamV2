@@ -1,10 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
@@ -31,10 +33,10 @@ export class CrnEntities {
   @Column('boolean', { name: 'adaptation', nullable: true })
   adaptation: boolean | null;
 
-  @Column('timestamp without time zone', { name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
-  @Column('timestamp without time zone', { name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
 
   @Column('bigint', { name: 'commercial_registration_number_id' })
