@@ -42,7 +42,7 @@ export class ArchiveRecord {
   note: string | null;
 
   @Column('bigint', { name: 'user_id' })
-  userId: string;
+  userId: number;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Timestamp;

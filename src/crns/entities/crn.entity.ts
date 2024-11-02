@@ -57,7 +57,7 @@ export class CommercialRegistrationNumber {
   currentPeriodEnd: Date | null;
 
   @Column('bigint', { name: 'user_id' })
-  userId: string;
+  userId: number;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
