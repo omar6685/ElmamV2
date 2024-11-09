@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const createNationalityReportSchema = z
   .object({
-    crnId: z.number().positive(),
+    entityId: z.number().positive(),
     userId: z.number().positive(),
     nationalities: z.array(
       z.object({

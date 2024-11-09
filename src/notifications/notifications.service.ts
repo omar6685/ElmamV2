@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as firebase from 'firebase-admin';
@@ -10,13 +10,13 @@ import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { NotificationToken } from './entities/notification-token.entity';
 
 firebase.initializeApp({
-  credential: firebase.credential.cert(
-    path.join('firebase-adminsdk.json'),
-  ),
+  credential: firebase.credential.cert(path.join('firebase-adminsdk.json')),
 });
 
 @Injectable()
 export class NotificationsService {
+  private readonly logger = new Logger(NotificationsService.name);
+
   constructor(
     @InjectRepository(Notification)
     private readonly notificationRepository: Repository<Notification>,
@@ -81,10 +81,10 @@ export class NotificationsService {
       const notification = await this.notificationTokenRepository.findOne({
         where: { user: { id: userId }, status: 'ACTIVE' },
       });
-      console.log('Request data:', userId, title, body);
-      console.log('notification:', notification);
+      this.logger.log('Request data:', userId, title, body);
+      this.logger.log('notification:', notification);
       if (notification) {
-        console.log('Notification exists');
+        this.logger.log('Notification exists');
         await firebase.messaging().send({
           notification: { title, body },
           token: notification.notificationToken,

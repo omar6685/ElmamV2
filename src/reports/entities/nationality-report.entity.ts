@@ -1,4 +1,5 @@
 import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
+import { Entities } from 'src/entities/entities/entity.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -12,7 +13,7 @@ import {
 } from 'typeorm';
 
 @Index(
-  'index_nationality_reports_on_commercial_registration_number_id',
+  'entity_id',
   ['commercialRegistrationNumberId'],
   {},
 )
@@ -51,20 +52,20 @@ export class NationalityReport {
   updatedAt: Date;
 
   @Column('bigint', {
-    name: 'commercial_registration_number_id',
+    name: 'entity_id',
     default: () => '1',
   })
-  commercialRegistrationNumberId: number;
+  entityId: number;
 
   @ManyToOne(
-    () => CommercialRegistrationNumber,
-    (commercialRegistrationNumbers) =>
-      commercialRegistrationNumbers.nationalityReports,
+    () => Entities,
+    (entities) =>
+      entities.nationalityReports,
   )
   @JoinColumn([
-    { name: 'commercial_registration_number_id', referencedColumnName: 'id' },
+    { name: 'entity_id', referencedColumnName: 'id' },
   ])
-  commercialRegistrationNumber: CommercialRegistrationNumber;
+  entity: Entities;
 
   @ManyToOne(() => User, (users) => users.nationalityReports)
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])

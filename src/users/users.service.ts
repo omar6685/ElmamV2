@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -6,6 +6,8 @@ import { Role, UserRole } from 'src/auth/entities/role.entity';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
@@ -26,19 +28,19 @@ export class UsersService {
   // Get roles for a specific user (by user_id)
   async getUserRoles(userId: number): Promise<Role[]> {
     // Step 1: Fetch role IDs from users_roles table for this user
-    console.log('User id:', userId);
+    this.logger.log('User id:', userId);
     const userRoles = await this.usersRolesRepository
       .find({
         where: { userId: userId },
       })
       .then((data) => data)
       .catch((err) => {
-        console.log('Error in user roles:', err);
+        this.logger.log('Error in user roles:', err);
         return [];
       });
 
     // Step 2: Fetch role details from roles table using role IDs
-    const roleIds = userRoles.map((ur) => ur.role_id);
+    const roleIds = userRoles.map((ur: UserRole) => ur.roleId);
 
     if (roleIds.length > 0) {
       return this.rolesRepository.findBy({ id: In(roleIds) }); // Fetch roles
@@ -53,7 +55,7 @@ export class UsersService {
     const role = await this.rolesRepository.findOne({
       where: { name: roleName },
     });
-    console.log(`Role ${role.id} found`);
+    this.logger.log(`Role ${role.id} found`);
     if (!role) {
       throw new Error('Role not found');
     }

@@ -23,7 +23,7 @@ export class ReportsService {
           totalEmployees,
           result,
           maxAddition,
-          commercialRegistrationNumberId: createReportDto.crnId,
+          entityId: createReportDto.entityId,
           userId: createReportDto.userId,
         });
       await this.nationalityReportsRepository.save(newReport);
