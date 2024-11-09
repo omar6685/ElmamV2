@@ -4,12 +4,16 @@ import { Repository } from 'typeorm';
 import { Entities } from './entities/entity.entity'; // Import the Entities entity
 import { CreateEntityDto } from './dto/create-entity.dto';
 import { UpdateEntityDto } from './dto/update-entity.dto';
+import { CrnEntities } from './entities/crn-entity.entity';
+import { CreateCrnEntityDto } from './dto/create-crn-entity.dto';
 
 @Injectable()
 export class EntitiesService {
   constructor(
     @InjectRepository(Entities)
     private readonly entitiesRepository: Repository<Entities>,
+    @InjectRepository(CrnEntities)
+    private readonly crnEntitiesRepository: Repository<CrnEntities>,
   ) {}
 
   // Create a new entity
@@ -18,9 +22,27 @@ export class EntitiesService {
     return await this.entitiesRepository.save(newEntity);
   }
 
+  // Create a new CRN entity
+  async createCrnEntity(
+    createCrnEntityDto: CreateCrnEntityDto,
+  ): Promise<CrnEntities> {
+    const newCrnEntity = this.crnEntitiesRepository.create(createCrnEntityDto);
+    return await this.crnEntitiesRepository.save(newCrnEntity);
+  }
+
   // Retrieve all entities
   async findAll(): Promise<Entities[]> {
     return await this.entitiesRepository.find();
+  }
+
+  // Retrieve all CRN entities
+  async findAllCrnEntities(entityId?: string): Promise<CrnEntities[]> {
+    if (!entityId || isNaN(parseInt(entityId))) {
+      return await this.crnEntitiesRepository.find();
+    }
+    return await this.crnEntitiesRepository.find({
+      where: { entityId: parseInt(entityId) },
+    });
   }
 
   // Retrieve a single entity by ID
@@ -33,9 +55,14 @@ export class EntitiesService {
   }
 
   // Update an existing entity by ID
-  async update(id: number, updateEntityDto: UpdateEntityDto): Promise<Entities> {
+  async update(
+    id: number,
+    updateEntityDto: UpdateEntityDto,
+  ): Promise<Entities> {
     await this.entitiesRepository.update(id, updateEntityDto);
-    const updatedEntity = await this.entitiesRepository.findOne({ where: { id } });
+    const updatedEntity = await this.entitiesRepository.findOne({
+      where: { id },
+    });
     if (!updatedEntity) {
       throw new NotFoundException(`Entity with ID ${id} not found`);
     }

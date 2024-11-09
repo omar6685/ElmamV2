@@ -25,13 +25,13 @@ export class CrnEntities {
   id: string;
 
   @Column('bigint', { name: 'entity_id' })
-  entityId: string;
+  entityId: number;
+
+  @Column('boolean', { name: 'adaptation', nullable: true })
+  adaptation: boolean;
 
   @Column('character varying', { name: 'logo_url' })
   logoUrl: string;
-
-  @Column('boolean', { name: 'adaptation', nullable: true })
-  adaptation: boolean | null;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
@@ -40,7 +40,7 @@ export class CrnEntities {
   updatedAt: Date;
 
   @Column('bigint', { name: 'commercial_registration_number_id' })
-  commercialRegistrationNumberId: string;
+  commercialRegistrationNumberId: number;
 
   @Column('character varying', { name: 'xlsx_file_local', nullable: true })
   xlsxFileLocal: string | null;
