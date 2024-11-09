@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+
 import { ActivitiesService } from './activities.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { RolesEnum } from 'src/shared/enums/role.enum';
+import { Roles } from 'src/shared/decorators/roles.decorator';
 
 @Controller('activities')
 export class ActivitiesController {
@@ -13,6 +16,7 @@ export class ActivitiesController {
   }
 
   @Get()
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
   findAll() {
     return this.activitiesService.findAll();
   }
