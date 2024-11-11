@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateActivityDto } from './create-activity.dto';
+import { z } from 'zod';
+import { createActivitySchema } from './create-activity.dto';
 
-export class UpdateActivityDto extends PartialType(CreateActivityDto) {}
+export const updateActivitySchema = createActivitySchema.partial();
+
+export type UpdateActivityDto = z.infer<typeof updateActivitySchema>;

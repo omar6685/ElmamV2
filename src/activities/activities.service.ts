@@ -13,8 +13,8 @@ export class ActivitiesService {
     private readonly activityTablesRepository: Repository<ActivityTables>,
   ) {}
 
-  create(createActivityDto: CreateActivityDto) {
-    return 'This action adds a new activity';
+  async create(createActivityDto: CreateActivityDto) {
+    return await this.activityTablesRepository.save(createActivityDto);
   }
 
   async findAll() {
