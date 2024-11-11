@@ -54,9 +54,6 @@ export class ArchiveRecord {
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
 
-  @OneToMany(
-    () => Notification,
-    (notifications) => notifications.archiveRecord,
-  )
+  @OneToMany(() => Notification, (notifications) => notifications.archiveRecord)
   notifications: Notification[];
 }

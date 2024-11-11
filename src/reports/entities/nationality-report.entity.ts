@@ -12,11 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Index(
-  'entity_id',
-  ['commercialRegistrationNumberId'],
-  {},
-)
+@Index('entity_id', ['entityId'], {})
 @Index('nationality_reports_pkey', ['id'], { unique: true })
 @Index('index_nationality_reports_on_user_id', ['userId'], {})
 @Entity('nationality_reports', { schema: 'public' })
@@ -57,14 +53,8 @@ export class NationalityReport {
   })
   entityId: number;
 
-  @ManyToOne(
-    () => Entities,
-    (entities) =>
-      entities.nationalityReports,
-  )
-  @JoinColumn([
-    { name: 'entity_id', referencedColumnName: 'id' },
-  ])
+  @ManyToOne(() => Entities, (entities) => entities.nationalityReports)
+  @JoinColumn([{ name: 'entity_id', referencedColumnName: 'id' }])
   entity: Entities;
 
   @ManyToOne(() => User, (users) => users.nationalityReports)
