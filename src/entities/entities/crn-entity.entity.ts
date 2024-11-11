@@ -57,6 +57,13 @@ export class CrnEntities {
   })
   residentXlsxFile: string | null;
 
+  @Column('jsonb', {
+    name: 'nationalities',
+    nullable: true,
+    array: false,
+  })
+  nationalities: Array<{ name: string; count: number }> | null;
+
   @ManyToOne(
     () => CommercialRegistrationNumber,
     (commercialRegistrationNumbers) =>
