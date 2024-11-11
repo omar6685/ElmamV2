@@ -8,19 +8,14 @@ export const createCrnEntitySchema = z.object({
   xlsxFileLocal: z.string().nullable().optional(),
   subscribersXlsxFile: z.string().nullable().optional(),
   residentXlsxFile: z.string().nullable().optional(),
+  nationalities: z
+    .array(
+      z.object({
+        name: z.string(),
+        count: z.number(),
+      }),
+    )
+    .nullable(),
 });
-
-/**
- * example body
-  {
-    "entityId": "string",
-    "adaptation": true,
-    "logoUrl": "string",
-    "commercialRegistrationNumberId": "string",
-    "xlsxFileLocal": "string",
-    "subscribersXlsxFile": "string",
-    "residentXlsxFile": "string"
-  }
- */
 
 export type CreateCrnEntityDto = z.infer<typeof createCrnEntitySchema>;
