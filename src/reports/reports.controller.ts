@@ -1,33 +1,75 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
+
 import { ReportsService } from './reports.service';
-import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { ZodValidationPipe } from 'src/shared/pipes/zod.pipe';
+import { RolesEnum } from 'src/shared/enums/role.enum';
+import {
+  CreateNationalityReportDto,
+  createNationalityReportSchema,
+} from './dto/nationality-reports/create.dto';
+import {
+  UpdateNationalityReportDto,
+  updateNationalityReportSchema,
+} from './dto/nationality-reports/update.dto';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 
 @Controller('reports')
+@UseGuards(RolesGuard)
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
-  @Post()
-  create(@Body() createReportDto: CreateReportDto) {
-    return this.reportsService.create(createReportDto);
+  @Post('nationality')
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
+  @UsePipes(new ZodValidationPipe(createNationalityReportSchema))
+  create(@Body() createNationalityReportDto: CreateNationalityReportDto) {
+    console.log(createNationalityReportDto);
+    return this.reportsService.create(createNationalityReportDto);
   }
 
-  @Get()
+  // get single nationality report
+  @Get('nationality/:id')
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
+  findOneNationalityReport(@Param('id') id: string) {
+    return this.reportsService.findOne(+id);
+  }
+
+  @Get('nationality')
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
   findAll() {
     return this.reportsService.findAll();
   }
 
-  @Get(':id')
+  @Get('nationality/:id')
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
   findOne(@Param('id') id: string) {
     return this.reportsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-    return this.reportsService.update(+id, updateReportDto);
+  @Patch('nationality/:id')
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
+  @UsePipes(new ZodValidationPipe(updateNationalityReportSchema))
+  update(
+    @Param('id') id: string,
+    @Body() updateNationalityReportDto: UpdateNationalityReportDto,
+  ) {
+    console.log('id:', id);
+    console.log('body:', updateNationalityReportDto);
+    return this.reportsService.update(+id, updateNationalityReportDto);
   }
 
-  @Delete(':id')
+  @Delete('nationality/:id')
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
   remove(@Param('id') id: string) {
     return this.reportsService.remove(+id);
   }

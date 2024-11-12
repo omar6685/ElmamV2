@@ -14,6 +14,7 @@ import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
 import { User } from 'src/users/entities/user.entity';
 import { CrnEntities } from './crn-entity.entity';
 import { ActivityTables } from 'src/activities/entities/activity.entity';
+import { NationalityReport } from 'src/reports/entities/nationality-report.entity';
 
 @Index('index_entities_on_activity_table_id', ['activityTableId'], {})
 @Index(
@@ -80,7 +81,7 @@ export class Entities {
   realSaudi: number | null;
 
   @Column('bigint', { name: 'commercial_registration_number_id' })
-  commercialRegistrationNumberId: string;
+  commercialRegistrationNumberId: number;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
@@ -92,7 +93,7 @@ export class Entities {
   userId: number;
 
   @Column('bigint', { name: 'activity_table_id' })
-  activityTableId: string;
+  activityTableId: number;
 
   @OneToMany(() => CrnEntities, (crnEntities) => crnEntities.entity)
   crnEntities: CrnEntities[];
@@ -113,6 +114,12 @@ export class Entities {
   @ManyToOne(() => User, (users) => users.entities)
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
+
+  @OneToMany(
+    () => NationalityReport,
+    (nationalityReports) => nationalityReports.entity,
+  )
+  nationalityReports: NationalityReport[];
 }
 
 // We need to integrate Activity table + CrnEntities for files

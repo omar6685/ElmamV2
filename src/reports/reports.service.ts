@@ -1,26 +1,207 @@
-import { Injectable } from '@nestjs/common';
-import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
+
+import { CreateNationalityReportDto } from './dto/nationality-reports/create.dto';
+import { UpdateNationalityReportDto } from './dto/nationality-reports/update.dto';
+import { NationalityReport } from './entities/nationality-report.entity';
+import { CrnEntities } from 'src/entities/entities/crn-entity.entity';
+import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
 
 @Injectable()
 export class ReportsService {
-  create(createReportDto: CreateReportDto) {
-    return 'This action adds a new report';
+  constructor(
+    @InjectRepository(NationalityReport)
+    private readonly nationalityReportsRepository: Repository<NationalityReport>,
+    @InjectRepository(CrnEntities)
+    private readonly crnEntitiesRepository: Repository<CrnEntities>,
+    @InjectRepository(CommercialRegistrationNumber)
+    private readonly commercialRegistrationNumberRepository: Repository<CommercialRegistrationNumber>,
+  ) {}
+  async create(createReportDto: CreateNationalityReportDto) {
+    try {
+      // const { saudis, totalEmployees, result, maxAddition } =
+      //   this.extractReportFields(createReportDto);
+      // const newReport: NationalityReport =
+      //   this.nationalityReportsRepository.create({
+      //     name: `Report-${new Date().getTime().toString()}`,
+      //     saudis,
+      //     totalEmployees,
+      //     result,
+      //     maxAddition,
+      //     entityId: createReportDto.entityId,
+      //     userId: createReportDto.userId,
+      //   });
+      // await this.nationalityReportsRepository.save(newReport);
+      // return newReport;
+      // change the logic of the create method to the following
+      // when receiving a request to generate a nationality report the body will only contain the entityId
+      // we will use crnEntitiesRepository to get all the CRNs that belong to the entity
+      // every crn will have a nationalities field which an aray of objects containings nationalities and their count
+      // for ex: "[{""name"": ""هندي"", ""count"": 31}, {""name"": ""فلبيني"", ""count"": 1}, {""name"": ""نيبالي"", ""count"": 7}, {""name"": ""باكستاني"", ""count"": 4}, {""name"": ""مصرى"", ""count"": 5}, {""name"": ""سعودي"", ""count"": 8}, {""name"": ""يمني"", ""count"": 15}, {""name"": ""سوداني"", ""count"": 1}]"
+      // after that we will calculate the total number of employees and the number of saudis and the result field for all the nationalities inside the crn entities and combine them in one report
+// find all the crnEntities that belong to the entity
+      const crnEntities = await this.crnEntitiesRepository.find({
+        where: { entityId: createReportDto.entityId },
+      });
+
+      console.log('CRN entities found', crnEntities);
+
+      // use crnEntities array to get the names of the companies that will be used in the report
+      // to identify the companies that the report is generated for
+      // companies will be a string of concatenated names of the companies
+      // we will use crnEntities in combination with commercialRegistrationNumberRepository
+      // to get the names of the companies
+      const companiesIds = crnEntities.map(
+        (crn) => crn.commercialRegistrationNumberId,
+      );
+      console.log('Companies IDs', companiesIds);
+      const crns = await this.commercialRegistrationNumberRepository.findBy({
+        id: In(companiesIds),
+      });
+      console.log('CRNs found', crns);
+      const companies = crns.map((crn) => crn.crName).join(', ');
+      console.log('Companies that belong to the entity', companies);
+
+
+      const nationalities = crnEntities.reduce(
+        (acc, crn) => {
+          const crnNationalities = crn.nationalities || [];
+          return acc.concat(crnNationalities);
+        },
+        [] as { name: string; count: number }[],
+      );
+
+      console.log('Nationalities extracted from the CRNs', nationalities);
+
+      const { saudis, totalEmployees, result, maxAddition } =
+        this.extractReportFields({ nationalities });
+
+      console.log('saudis', result);
+
+      const newReport: NationalityReport =
+        this.nationalityReportsRepository.create({
+          name: `Nationalities Report-${new Date().toDateString()}-${new Date().toTimeString().toString()}`,
+          saudis,
+          totalEmployees,
+          result,
+          maxAddition,
+          entityId: createReportDto.entityId,
+          userId: createReportDto.userId,
+          companies,
+        });
+
+      await this.nationalityReportsRepository.save(newReport);
+
+      return newReport;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Error creating nationality report');
+    }
   }
 
-  findAll() {
-    return `This action returns all reports`;
+  async findAll() {
+    return await this.nationalityReportsRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} report`;
+  async findOne(id: number) {
+    const nationalityReport = await this.nationalityReportsRepository.findOne({
+      where: { id },
+    });
+
+    if (!nationalityReport) {
+      throw new NotFoundException(`Report with ID ${id} not found`);
+    }
+
+    return nationalityReport;
   }
 
-  update(id: number, updateReportDto: UpdateReportDto) {
-    return `This action updates a #${id} report`;
+  async update(
+    id: number,
+    updateReportDto: UpdateNationalityReportDto,
+  ): Promise<NationalityReport> {
+    const nationalityReport = await this.findOne(id); // Find the nationalityReport, throw error if not found
+
+    Object.assign(nationalityReport, updateReportDto); // Merge new data with the existing nationalityReport
+    return await this.nationalityReportsRepository.save(nationalityReport);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} report`;
+  async remove(id: number): Promise<void> {
+    const nationalityReport = await this.findOne(id); // Find the nationalityReport, throw error if not found
+    await this.nationalityReportsRepository.remove(nationalityReport);
+  }
+
+  private extractReportFields(data: {
+    nationalities: { name: string; count: number }[];
+  }) {
+    console.log('extractReportFields called with data', data);
+    // Calculate the total number of employees
+    const totalEmployees = data.nationalities.reduce(
+      (sum, { count }) => sum + count,
+      0,
+    );
+
+    // Get the number of Saudis (assuming 'Saudis' is one of the nationalities)
+    const saudis =
+      data.nationalities.find((nat) => nat.name.toLowerCase() === 'سعودي')
+        ?.count || 0;
+
+    // Build the result field (formatted string with name, count, and percentage)
+    const totalForeignerEmployees = totalEmployees - saudis;
+    const result = data.nationalities
+      .filter((nat) => nat.name.toLowerCase() !== 'سعودي')
+      .map(({ name, count }) => {
+        const percentage = ((count / totalForeignerEmployees) * 100).toFixed(2);
+        return `${name},${count},${percentage}%`;
+      })
+      .join('|');
+
+    // Calculate the max addition for each nationality
+    const maxAddition = this.calculateMaxAddition(
+      data.nationalities as { name: string; count: number }[],
+      totalEmployees,
+    );
+
+    return {
+      saudis,
+      totalEmployees,
+      result,
+      maxAddition: JSON.stringify(maxAddition), // Storing as JSON string
+    };
+  }
+
+  // Helper function to calculate max addition
+  private calculateMaxAddition(
+    nationalities: { name: string; count: number }[],
+    totalEmployees: number,
+  ) {
+    const maxAdditions: Record<string, number> = {};
+
+    nationalities.forEach(({ name, count }) => {
+      let inc = 0;
+      const allowedPercentage = this.calculateAllowedPercentage(name); // Define your logic here for allowed percentage
+      let actualPercentage = (count / totalEmployees) * 100;
+
+      while (true) {
+        inc += 1;
+        actualPercentage = ((count + inc) / (totalEmployees + inc)) * 100;
+        if (actualPercentage > allowedPercentage) break;
+      }
+
+      maxAdditions[name] = Math.max(0, inc - 1);
+    });
+
+    return maxAdditions;
+  }
+
+  // Mock function to calculate allowed percentage for a nationality (replace with actual logic)
+  private calculateAllowedPercentage(nationality: string): number {
+    // For example, you can define specific allowed percentages based on the nationality
+    switch (nationality.toLowerCase()) {
+      case 'سعودي':
+        return 30; // Example allowed percentage for Saudis
+      default:
+        return 10; // Default allowed percentage for other nationalities
+    }
   }
 }

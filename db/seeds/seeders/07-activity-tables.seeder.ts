@@ -1,4 +1,4 @@
-import {
+/**import {
   Column,
   CreateDateColumn,
   Entity,
@@ -87,4 +87,59 @@ export class ActivityTables {
 
   // @OneToMany(() => Studies, (studies) => studies.activityTable)
   // studies: Studies[];
+}
+ */
+
+import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { DataSource } from 'typeorm';
+import { ActivityTables } from 'src/activities/entities/activity.entity';
+
+export default class ActivityTablesSeeder implements Seeder {
+  public async run(
+    dataSource: DataSource,
+    factoryManager: SeederFactoryManager,
+  ): Promise<void> {
+    console.log('ActivityTables seeding in progress... ⏳');
+
+    await dataSource.query('TRUNCATE "activity_tables" RESTART IDENTITY;');
+
+    const repository = dataSource.getRepository(ActivityTables);
+
+    // seeding
+    await repository.insert({
+      activitiy: 'Activity 1',
+      fixedValueLowGreen: 1,
+      fixedCurveValueLowGreen: 1,
+      fixedValueMidGreen: 1,
+      fixedCurveValueMidGreen: 1,
+      fixedValueHiGreen: 1,
+      fixedCurveValueHiGreen: 1,
+      fixedValuePlatiniumGreen: 1,
+      fixedCurveValuePlatiniumGreen: 1,
+    });
+    await repository.insert({
+      activitiy: 'Activity 2',
+      fixedValueLowGreen: 2,
+      fixedCurveValueLowGreen: 2,
+      fixedValueMidGreen: 2,
+      fixedCurveValueMidGreen: 2,
+      fixedValueHiGreen: 2,
+      fixedCurveValueHiGreen: 2,
+      fixedValuePlatiniumGreen: 2,
+      fixedCurveValuePlatiniumGreen: 2,
+    });
+    await repository.insert({
+      activitiy: 'Activity 3',
+      fixedValueLowGreen: 3,
+      fixedCurveValueLowGreen: 3,
+      fixedValueMidGreen: 3,
+      fixedCurveValueMidGreen: 3,
+      fixedValueHiGreen: 3,
+      fixedCurveValueHiGreen: 3,
+      fixedValuePlatiniumGreen: 3,
+      fixedCurveValuePlatiniumGreen: 3,
+    });
+
+    console.log('ActivityTables Seeded ✅');
+  }
 }

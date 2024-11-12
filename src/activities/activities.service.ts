@@ -1,15 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { ActivityTables } from './entities/activity.entity';
 
 @Injectable()
 export class ActivitiesService {
-  create(createActivityDto: CreateActivityDto) {
-    return 'This action adds a new activity';
+  constructor(
+    @InjectRepository(ActivityTables)
+    private readonly activityTablesRepository: Repository<ActivityTables>,
+  ) {}
+
+  async create(createActivityDto: CreateActivityDto) {
+    return await this.activityTablesRepository.save(createActivityDto);
   }
 
-  findAll() {
-    return `This action returns all activities`;
+  async findAll() {
+    return await this.activityTablesRepository.find();
   }
 
   findOne(id: number) {

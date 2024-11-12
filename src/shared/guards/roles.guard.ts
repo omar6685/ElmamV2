@@ -47,7 +47,7 @@ export class RolesGuard implements CanActivate {
 
       // Check if the user has one of the required roles
       const userRoles = decoded.roles;
-      const hasRole = requiredRoles.some((role) => userRoles.includes(role));
+      const hasRole = requiredRoles.some((role) => userRoles?.includes(role));
 
       if (!hasRole) {
         throw new ForbiddenException('Insufficient permissions');
@@ -58,8 +58,12 @@ export class RolesGuard implements CanActivate {
     } catch (error) {
       if (error instanceof TokenExpiredError) {
         throw new UnauthorizedException('Token has expired');
+      } else if (error instanceof ForbiddenException) {
+        throw new ForbiddenException('Insufficient permissions');
       } else {
-        throw new UnauthorizedException('Invalid or malformed token');
+        throw new UnauthorizedException(
+          'Roles: Invalid token provided or token has been tampered with',
+        );
       }
     }
   }

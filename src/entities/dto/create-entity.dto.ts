@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const createEntitySchema = z.object({
-  adaptation: z.boolean().nullable().optional(),
   ajier: z.number().int().nullable().optional(),
   saudiPlayer: z.number().int().nullable().optional(),
   saudiJailed: z.number().int().nullable().optional(),
@@ -17,11 +16,11 @@ export const createEntitySchema = z.object({
   owner: z.number().int().nullable().optional(),
   realForeigner: z.number().nullable().optional(),
   realSaudi: z.number().nullable().optional(),
-  commercialRegistrationNumberId: z.string(),
+  commercialRegistrationNumberId: z.number(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
   userId: z.number(),
-  activityTableId: z.string(),
+  activityTableId: z.number(),
 });
 
 export type CreateEntityDto = z.infer<typeof createEntitySchema>;

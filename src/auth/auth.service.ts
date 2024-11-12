@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
@@ -13,6 +13,8 @@ import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
@@ -32,7 +34,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    console.log('Login User:', user);
+    this.logger.log('Login User:', user);
 
     // Compare hashed password with provided password
     const isPasswordValid = await bcrypt.compare(
@@ -43,19 +45,19 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    console.log('Password Match ✔');
+    this.logger.log('Password Match ✔');
 
     // Fetch user roles
     const roles: Role[] = await this.usersService.getUserRoles(user.id);
     const roleNames = roles.map((role) => role.name); // Extract role names
 
-    console.log(`Role names: ${roleNames}`);
+    this.logger.log(`Role names: ${roleNames}`);
 
     // Get current timestamp and IP address
     const currentTimestamp = new Date();
     const currentIp = request.ip;
 
-    console.log('Sign in time/dates:', {
+    this.logger.log('Sign in time/dates:', {
       signInCount: user.signInCount + 1,
       last_sign_in_at: user.currentSignInAt,
       currentSignInAt: currentTimestamp,
@@ -114,11 +116,23 @@ export class AuthService {
       encryptedPassword: hashedPassword,
     });
 
+    this.logger.log('New User Added Successfully');
+
     // Assign default role 'customer' to the new user (create entry in users_roles)
-    await this.usersService.assignRole(newUser.id, RolesEnum.CUSTOMER);
+    try {
+      await this.usersService.assignRole(newUser.id, RolesEnum.CUSTOMER);
+      this.logger.log('Role assigned to user:', RolesEnum.CUSTOMER);
+    } catch (err) {
+      //! Delete the user
+      await this.usersService.remove(newUser.id);
+      this.logger.error('Error assigning role to user:', err);
+      throw new Error('Unable to assign role to user');
+    }
 
     // Create or update the fcmToken for this user
     await this.handleFcmToken(newUser, fcmToken);
+
+    this.logger.log('FCM Token added/updated');
 
     const payload = {
       sub: newUser.id,

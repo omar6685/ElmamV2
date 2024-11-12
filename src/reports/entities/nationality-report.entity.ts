@@ -1,4 +1,5 @@
 import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
+import { Entities } from 'src/entities/entities/entity.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -11,11 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Index(
-  'index_nationality_reports_on_commercial_registration_number_id',
-  ['commercialRegistrationNumberId'],
-  {},
-)
+@Index('entity_id', ['entityId'], {})
 @Index('nationality_reports_pkey', ['id'], { unique: true })
 @Index('index_nationality_reports_on_user_id', ['userId'], {})
 @Entity('nationality_reports', { schema: 'public' })
@@ -44,6 +41,9 @@ export class NationalityReport {
   @Column('bigint', { name: 'user_id' })
   userId: number;
 
+  @Column('character varying', { name: 'companies', nullable: true })
+  companies: string | null;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
@@ -51,20 +51,14 @@ export class NationalityReport {
   updatedAt: Date;
 
   @Column('bigint', {
-    name: 'commercial_registration_number_id',
+    name: 'entity_id',
     default: () => '1',
   })
-  commercialRegistrationNumberId: number;
+  entityId: number;
 
-  @ManyToOne(
-    () => CommercialRegistrationNumber,
-    (commercialRegistrationNumbers) =>
-      commercialRegistrationNumbers.nationalityReports,
-  )
-  @JoinColumn([
-    { name: 'commercial_registration_number_id', referencedColumnName: 'id' },
-  ])
-  commercialRegistrationNumber: CommercialRegistrationNumber;
+  @ManyToOne(() => Entities, (entities) => entities.nationalityReports)
+  @JoinColumn([{ name: 'entity_id', referencedColumnName: 'id' }])
+  entity: Entities;
 
   @ManyToOne(() => User, (users) => users.nationalityReports)
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
