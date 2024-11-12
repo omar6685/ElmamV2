@@ -41,6 +41,9 @@ export class NationalityReport {
   @Column('bigint', { name: 'user_id' })
   userId: number;
 
+  @Column('character varying', { name: 'companies', nullable: true })
+  companies: string | null;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
