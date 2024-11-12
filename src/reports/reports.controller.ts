@@ -37,6 +37,13 @@ export class ReportsController {
     return this.reportsService.create(createNationalityReportDto);
   }
 
+  // get single nationality report
+  @Get('nationality/:id')
+  @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
+  findOneNationalityReport(@Param('id') id: string) {
+    return this.reportsService.findOne(+id);
+  }
+
   @Get('nationality')
   @Roles(RolesEnum.ADMIN, RolesEnum.CUSTOMER, RolesEnum.TECHNICAL)
   findAll() {
