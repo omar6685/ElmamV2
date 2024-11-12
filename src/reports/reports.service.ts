@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { CreateNationalityReportDto } from './dto/nationality-reports/create.dto';
 import { UpdateNationalityReportDto } from './dto/nationality-reports/update.dto';
 import { NationalityReport } from './entities/nationality-report.entity';
 import { CrnEntities } from 'src/entities/entities/crn-entity.entity';
+import { CommercialRegistrationNumber } from 'src/crns/entities/crn.entity';
 
 @Injectable()
 export class ReportsService {
@@ -14,6 +15,8 @@ export class ReportsService {
     private readonly nationalityReportsRepository: Repository<NationalityReport>,
     @InjectRepository(CrnEntities)
     private readonly crnEntitiesRepository: Repository<CrnEntities>,
+    @InjectRepository(CommercialRegistrationNumber)
+    private readonly commercialRegistrationNumberRepository: Repository<CommercialRegistrationNumber>,
   ) {}
   async create(createReportDto: CreateNationalityReportDto) {
     try {
@@ -37,12 +40,29 @@ export class ReportsService {
       // every crn will have a nationalities field which an aray of objects containings nationalities and their count
       // for ex: "[{""name"": ""هندي"", ""count"": 31}, {""name"": ""فلبيني"", ""count"": 1}, {""name"": ""نيبالي"", ""count"": 7}, {""name"": ""باكستاني"", ""count"": 4}, {""name"": ""مصرى"", ""count"": 5}, {""name"": ""سعودي"", ""count"": 8}, {""name"": ""يمني"", ""count"": 15}, {""name"": ""سوداني"", ""count"": 1}]"
       // after that we will calculate the total number of employees and the number of saudis and the result field for all the nationalities inside the crn entities and combine them in one report
-
+// find all the crnEntities that belong to the entity
       const crnEntities = await this.crnEntitiesRepository.find({
         where: { entityId: createReportDto.entityId },
       });
 
-      console.log('CrnEntities that belong to the entity', crnEntities);
+      console.log('CRN entities found', crnEntities);
+
+      // use crnEntities array to get the names of the companies that will be used in the report
+      // to identify the companies that the report is generated for
+      // companies will be a string of concatenated names of the companies
+      // we will use crnEntities in combination with commercialRegistrationNumberRepository
+      // to get the names of the companies
+      const companiesIds = crnEntities.map(
+        (crn) => crn.commercialRegistrationNumberId,
+      );
+      console.log('Companies IDs', companiesIds);
+      const crns = await this.commercialRegistrationNumberRepository.findBy({
+        id: In(companiesIds),
+      });
+      console.log('CRNs found', crns);
+      const companies = crns.map((crn) => crn.crName).join(', ');
+      console.log('Companies that belong to the entity', companies);
+
 
       const nationalities = crnEntities.reduce(
         (acc, crn) => {
@@ -61,13 +81,14 @@ export class ReportsService {
 
       const newReport: NationalityReport =
         this.nationalityReportsRepository.create({
-          name: `Report-${new Date().getTime().toString()}`,
+          name: `Nationalities Report-${new Date().toDateString()}-${new Date().toTimeString().toString()}`,
           saudis,
           totalEmployees,
           result,
           maxAddition,
           entityId: createReportDto.entityId,
           userId: createReportDto.userId,
+          companies,
         });
 
       await this.nationalityReportsRepository.save(newReport);
@@ -133,7 +154,7 @@ export class ReportsService {
         const percentage = ((count / totalForeignerEmployees) * 100).toFixed(2);
         return `${name},${count},${percentage}%`;
       })
-      .join(',');
+      .join('|');
 
     // Calculate the max addition for each nationality
     const maxAddition = this.calculateMaxAddition(
