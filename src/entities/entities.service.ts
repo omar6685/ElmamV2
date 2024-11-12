@@ -37,13 +37,20 @@ export class EntitiesService {
 
   // Retrieve all CRN entities
   async findAllCrnEntities(entityId?: string): Promise<CrnEntities[]> {
-    if (!entityId || isNaN(parseInt(entityId))) {
-      return await this.crnEntitiesRepository.find();
+    const query = this.crnEntitiesRepository
+      .createQueryBuilder('crnEntities')
+      .leftJoinAndSelect('crnEntities.commercialRegistrationNumber', 'crNumber') // Join with CommercialRegistrationNumber
+      .addSelect(['crNumber.crName', 'crNumber.company', 'crNumber.businessType', 'crNumber.location']) // Select specific fields
+      .leftJoinAndSelect('crnEntities.entity', 'entity') // Optionally include the entity information if required
+      .orderBy('crnEntities.id', 'ASC'); // Order by id for consistency
+  
+    if (entityId && !isNaN(parseInt(entityId))) {
+      query.where('crnEntities.entityId = :entityId', { entityId: parseInt(entityId) });
     }
-    return await this.crnEntitiesRepository.find({
-      where: { entityId: parseInt(entityId) },
-    });
+  
+    return await query.getMany();
   }
+  
 
   // Retrieve a single entity by ID
   async findOne(id: number): Promise<Entities> {
