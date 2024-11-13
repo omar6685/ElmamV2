@@ -11,6 +11,7 @@ export default class UsersSeeder implements Seeder {
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
     console.log('Users seeding in progress... ⏳');
+    return
 
     const userRepository: Repository<User> = dataSource.getRepository(User);
     const filePath =

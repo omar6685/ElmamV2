@@ -15,7 +15,7 @@ export const dbDataSourceOptions: DataSourceOptions & SeederOptions = {
   migrations: [
     /*...*/
   ],
-  ssl: process.env.DATABASE_HOST !== '127.0.0.1',
+  ssl: false,
   synchronize: process.env.NODE_ENV == 'development', // only synchronize in development mode
   seeds: ['dist/db/seeds/seeders/**/*.js'],
   factories: ['dist/db/factories/**/*.js'],

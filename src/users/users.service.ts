@@ -51,6 +51,15 @@ export class UsersService {
 
   // Assign a role to a user (create entry in users_roles table)
   async assignRole(userId: number, roleName: string): Promise<void> {
+    // check if role does not exists and create it
+    const roleExists = await this.rolesRepository.findOne({
+      where: { name: roleName },
+    });
+
+    if (!roleExists) {
+      const newRole = this.rolesRepository.create({ name: roleName });
+      await this.rolesRepository.save(newRole);
+    }
     // Find the role by name
     const role = await this.rolesRepository.findOne({
       where: { name: roleName },

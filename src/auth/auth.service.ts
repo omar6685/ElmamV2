@@ -125,8 +125,8 @@ export class AuthService {
     } catch (err) {
       //! Delete the user
       await this.usersService.remove(newUser.id);
-      this.logger.error('Error assigning role to user:', err);
-      throw new Error('Unable to assign role to user');
+      this.logger.error('Error assigning role to user:', newUser.id, err);
+      throw new Error('Unable to assign role to user' + newUser.id);
     }
 
     // Create or update the fcmToken for this user

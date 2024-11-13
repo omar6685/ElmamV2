@@ -9,7 +9,7 @@ export default class NotificationTokenSeeder implements Seeder {
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
     console.log('Notification tokens seeding in progress... ⏳');
-
+    return
     await dataSource.query('TRUNCATE "notification_tokens" RESTART IDENTITY CASCADE;');
 
     const tokenRepository = dataSource.getRepository(NotificationToken);
