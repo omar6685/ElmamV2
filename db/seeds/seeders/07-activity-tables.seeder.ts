@@ -100,7 +100,7 @@ export default class ActivityTablesSeeder implements Seeder {
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
     console.log('ActivityTables seeding in progress... ⏳');
-
+    return
     await dataSource.query('TRUNCATE "activity_tables" RESTART IDENTITY;');
 
     const repository = dataSource.getRepository(ActivityTables);

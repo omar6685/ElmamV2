@@ -14,7 +14,7 @@ export default class NotificationSeeder implements Seeder {
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
     console.log('Notifications seeding in progress... ⏳');
-
+    return
     await dataSource.query(
       'TRUNCATE "notifications" RESTART IDENTITY CASCADE;',
     );

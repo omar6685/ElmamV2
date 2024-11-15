@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nestjs-backend
+    container_name: nestjs-backend
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres-db
+    environment:
+      - DATABASE_USERNAME=moyasar
+      - DATABASE_PASSWORD=3tzmLBvukVVlDkA2bmdhtqwQSEkSoZTr
+      - DATABASE_NAME=moyasar_23rf
+      - DATABASE_HOST=postgres-db
+      - DATABASE_PORT=5432
+    networks:
+      - backend_network
+
+  postgres-db:
+    image: postgres:13
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: moyasar
+      POSTGRES_PASSWORD: 3tzmLBvukVVlDkA2bmdhtqwQSEkSoZTr
+      POSTGRES_DB: moyasar_23rf
+    ports:
+      - "5432:5432"
+    networks:
+      - backend_network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+# Define the shared network
+networks:
+  backend_network:
+
+# Define a volume for persistent database storage
+volumes:
+  pgdata:

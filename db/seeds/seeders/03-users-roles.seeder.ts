@@ -12,7 +12,7 @@ export default class UsersRolesSeeder implements Seeder {
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
     console.log('Users roles seeding in progress... ⏳');
-
+return
     await dataSource.query('TRUNCATE "users_roles" RESTART IDENTITY;');
 
     const usersRoleRepository = dataSource.getRepository(UserRole);

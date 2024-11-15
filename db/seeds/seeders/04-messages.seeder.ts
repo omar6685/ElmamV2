@@ -12,7 +12,7 @@ export default class MessageSeeder implements Seeder {
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
     console.log('Messages seeding in progress... ⏳');
-
+return
     await dataSource.query('TRUNCATE "messages" RESTART IDENTITY CASCADE;');
 
     const messageRepository = dataSource.getRepository(Message);
